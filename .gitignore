@@ -1,0 +1,12 @@
+.classpath
+.factorypath
+.project
+.settings
+*.idea*
+*.iml*
+target
+test-output
+*/src/main/webapp/META-INF/
+*~
+.DS_Store
+examples.properties
