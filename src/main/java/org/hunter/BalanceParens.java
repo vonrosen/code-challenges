@@ -54,7 +54,6 @@ public class BalanceParens{
 			Character c = s.charAt(i);
 			if (c == '{' || c == '[' || c == '('){
 				stack.push(c);
-				continue;
 			}
 
 			if (c == '}' || c == ']' || c == ')'){
@@ -73,8 +72,6 @@ public class BalanceParens{
 				if(c == ')' && popped.charValue() != '('){
 					return false;
 				}
-
-				continue;
 			}
 		}
 		return stack.size() == 0;
