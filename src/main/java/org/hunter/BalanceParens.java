@@ -2,22 +2,54 @@ package org.hunter;
 
 import java.util.Stack;
 
-import com.sun.tools.javac.util.Assert;
-
 public class BalanceParens{
 
-	public static void main(String [] args){
+	public static void main(String [] args) throws Exception{
 		String s1 = "{{{{{{{{";
 		String s2 = "}";
-		String s3 = "((}}}";
+		String s3 = "((}}}"; //} ((
+		String s4 = "({[]})"; //] [{(
+		String s5 = "({}[]{})";
+		String s6 = "({[]})[]{}()";
 
-		Assert.check(balanced(s1) == false);
-		Assert.check(balanced(s2) == false);
-		Assert.check(balanced(s3) == false);
+		if(balanced(s1) != false){
+			bad();
+		}
+
+		if(balanced(s2) != false){
+			bad();
+		}
+
+		if(balanced(s3) != false){
+			bad();
+		}
+
+		if(balanced(s4) != true){
+			bad();
+		}
+
+		if(balanced(s5) != true){
+			bad();
+		}
+
+		if(balanced(s6) != true){
+			bad();
+		}
+
+		good();
 	}
 
+	private static void bad() throws Exception{
+		throw new Exception("bad!!!!");
+	}
+
+	private static void good(){
+		System.out.println("PASSED!");
+	}
+
+	//time=O(n), space=O(n)
 	public static boolean balanced(String s){
-		Stack<Character> stack = new Stack<Character>();
+		Stack<Character> stack = new Stack<>();
 		for(int i = 0; i < s.length(); ++i){
 			Character c = s.charAt(i);
 			if (c == '{' || c == '[' || c == '('){
@@ -30,9 +62,18 @@ public class BalanceParens{
 					return false;
 				}
 				Character popped = stack.pop();
-				if(popped.charValue() != c){
+				if(c == '}' && popped.charValue() != '{'){
 					return false;
 				}
+
+				if(c == ']' && popped.charValue() != '['){
+					return false;
+				}
+
+				if(c == ')' && popped.charValue() != '('){
+					return false;
+				}
+
 				continue;
 			}
 		}
