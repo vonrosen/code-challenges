@@ -33,6 +33,7 @@ public class ArrayPartition{
 		}
 	}
 
+	//time=O(n) space=O(1)
 	public static int [] partition(int [] array){
 		if(array.length == 0){
 			return array;
