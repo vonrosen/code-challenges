@@ -1,12 +1,19 @@
 package org.hunter;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Stack;
+
 public class Boggle{
 
 	public static void main(String [] args){
 		char [][] grid = {
-				{ 'G', 'E', 'X', 'B'},
-				{ 'E', 'E', 'K', 'B'},
-				{ 'S', 'X', 'B', 'X'},
+				{ 'G', 'E', 'X'},
+				{ 'E', 'E', 'K'},
+				{ 'S', 'X', 'S'},
 		};
 
 		String word = "GEEKS";
@@ -26,6 +33,35 @@ public class Boggle{
 		}
 		return false;
 	}
+
+	private static void dfs(char [][] grid){
+		Stack<List<Integer>> unvisited = new Stack<>();
+		unvisited.push(List.of(0, 0));
+		Map<List<Integer>, List<Integer>> map = new HashMap<>();
+
+		while(!unvisited.isEmpty()){
+			List<Integer> visited = unvisited.pop();
+			
+			if(visited.get(0) < 0 || visited.get(1) < 0 ||
+				visited.get(0) >= grid.length || visited.get(1) >= grid.length
+					|| map.get(visited) != null){
+				continue;
+			}
+
+			map.put(visited, visited);
+			System.out.println(grid[visited.get(0)][visited.get(1)]);
+
+			unvisited.push(List.of(visited.get(0) - 1, visited.get(1) - 1));
+			unvisited.push(List.of(visited.get(0) - 1, visited.get(1)));
+			unvisited.push(List.of(visited.get(0) - 1, visited.get(1) + 1));
+			unvisited.push(List.of(visited.get(0), visited.get(1) - 1));
+			unvisited.push(List.of(visited.get(0), visited.get(1) + 1));
+			unvisited.push(List.of(visited.get(0) + 1, visited.get(1) - 1));
+			unvisited.push(List.of(visited.get(0) + 1, visited.get(1)));
+			unvisited.push(List.of(visited.get(0) + 1, visited.get(1) + 1));
+		}
+	}
+
 
 	private static boolean exists(int i, int k, boolean[][] visited, char[][] grid, char[] word, int pos){
 		if(pos == word.length){
