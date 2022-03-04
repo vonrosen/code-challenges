@@ -20,11 +20,12 @@ public class LRU{
 		lru.add("3", "3");
 		//should be null
 		System.out.println(lru.get("1"));
-		//should not be null
 		System.out.println(lru.get("2"));
 		lru.add("4", "4");
-		//should not be null
+		//should be null
 		System.out.println(lru.get("3"));
+		System.out.println(lru.get("4"));
+		System.out.println(lru.get("2"));
 	}
 
 	public void add(String id, Object object){
@@ -47,7 +48,6 @@ public class LRU{
 
 	class LinkedList{
 		LinkedListNode head;
-		LinkedListNode tail;
 		class LinkedListNode{
 			LinkedListNode(Object object){
 				this.object = object;
@@ -60,7 +60,6 @@ public class LRU{
 		void add(Object object){
 			if(head == null){
 				head = new LinkedListNode(object);
-				tail = head;
 				return;
 			}
 			LinkedListNode tmp = head;
@@ -69,21 +68,20 @@ public class LRU{
 			}
 			tmp.next = new LinkedListNode(object);
 			tmp.next.prev = tmp;
-			tail = tmp.next;
 		}
 
 		void delete(Object object){
 			if(head == null){
 				return;
 			}
+			if(head.object.equals(object)){
+				head = head.next;
+				return;
+			}
 			LinkedListNode tmp = head;
 			while(tmp != null){
 				if(object.equals(tmp.object)){
-					if(tmp.prev == null){
-						tmp = tmp.next;
-					}else{
-						tmp.prev = tmp.next;
-					}
+					tmp.prev = tmp.next;
 					return;
 				}
 				tmp = tmp.next;
