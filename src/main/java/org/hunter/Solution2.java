@@ -8,32 +8,24 @@ public class Solution2{
 	 * Words are formed from adjoining letters.
 	 * Letters must join in the proper sequence to spell a word.
 	 * They may join horizontally, vertically, or diagonally, to the left, right, or up-and-down.
+	 * You can't re-use the same letter (a letter in a specific position on the
+	 * board) more than once to spell a word.
 	 *
 	 * Examples.
 	 *
-	 * Word = "geeks"
+	 * Word = "pop"
 	 *
 	 * Case 1:
 	 {
-	 {'a', 'g', 'a', 'a'},
-	 {'a', 'e', 'e', 'a'},
-	 {'a', 'a', 'k', 'a'},
-	 {'a', 'a', 'a', 's'},
-	 }; //true geeks exists!
+		 {'p', 'o'},
+		 {'e', 'p'}
+	 };// true because pop exists in grid
+
 	 Case 2:
 	 {
-	 {'s', 'k', 'a', 'a'},
-	 {'a', 'e', 'a', 'a'},
-	 {'a', 'a', 'e', 'a'},
-	 {'a', 'a', 'a', 'g'},
-	 }; //true geeks exists!
-	 Case 3:
-	 {
-	 {'a', 'g', 'a', 'a'},
-	 {'a', 'e', 'e', 'a'},
-	 {'s', 'a', 'k', 'a'},
-	 {'a', 'a', 'a', 'a'},
-	 };//false geeks does not exist!
+		 {'p', 'd'},
+		 {'d', 'd'}
+	 }; //false because pop does not exist in grid
 
 	 write a function boolean hasWord(String word, char[][] grid) to determine
 	 if a word exists in a grid using boggle rules
@@ -44,41 +36,31 @@ public class Solution2{
 //	}
 
 	public static void main(String[] args) {
-		String word = "geeks";
-		char[][] wordGrid = {
-				{'a', 'g', 'c', 'x'},
-				{'a', 'e', 'e', 'x'},
-				{'a', 'b', 'k', 'y'},
-				{'a', 'b', 'b', 's'},
-		}; //true
-		char[][] wordGrid2 = {
-				{'s', 'k', 'c', 'x'},
-				{'a', 'e', 'b', 'x'},
-				{'a', 'b', 'e', 'y'},
-				{'a', 'b', 'b', 'g'},
-		}; //true
-		char[][] wordGrid3 = {
-				{'a', 'g', 'c', 'y'},
-				{'a', 'e', 'e', 'y'},
-				{'s', 'b', 'k', 'y'},
-				{'a', 'b', 'x', 'y'},
+		String word = "pop";
+		char[][] grid1 = {
+				{'p', 'o'},
+				{'e', 'p'}
+		};//true
+		char[][] grid2 = {
+				{'p', 'e'},
+				{'e', 'e'}
+		}; //false
+		System.out.println(hasWord(word, grid1));
+		System.out.println(hasWord(word, grid2));
+
+		String w = "pop";
+		char[][] wg1 = {
+				{'p', 'o'},
+				{'e', 'e'}
 		};//false
-		char[][] wordGrid4 = {
-				{'a', 'g', 'c', 'y'},
-				{'a', 'e', 'k', 'y'},
-				{'s', 'b', 'e', 'y'},
-				{'a', 'b', 's', 'y'},
-		};//false
-		System.out.println(hasWord(word, wordGrid));
-		System.out.println(hasWord(word, wordGrid2));
-		System.out.println(hasWord(word, wordGrid3));
-		System.out.println(hasWord(word, wordGrid4));
+		System.out.println(hasWord(w, wg1));
 	}
 
 	static boolean hasWord(String word, char[][] grid) {
+		boolean [][] visited = new boolean[grid.length][grid[0].length];
 		for(int i = 0; i < grid.length; ++i){
 			for (int j = 0; j < grid[i].length; ++j){
-				if(hasWord(word, grid, i, j, 0)){
+				if(hasWord(word, grid, i, j, 0, visited)){
 					return true;
 				}
 			}
@@ -86,7 +68,7 @@ public class Solution2{
 		return false;
 	}
 
-	private static boolean hasWord(String word, char[][] grid, int i, int j, int wordPos){
+	private static boolean hasWord(String word, char[][] grid, int i, int j, int wordPos, boolean [][] visited){
 		if(i < 0 || j < 0){
 			return false;
 		}
@@ -99,20 +81,24 @@ public class Solution2{
 		if(wordPos >= word.length()){
 			return false;
 		}
+		if(visited[i][j]){
+			return false;
+		}
+		visited[i][j] = true;
 		if(grid[i][j] == word.charAt(wordPos) && word.length() - 1 == wordPos){
 			return true;
 		}
 		if(grid[i][j] == word.charAt(wordPos)){
-			boolean found = hasWord(word, grid, i - 1, j - 1, wordPos + 1)
-					|| hasWord(word, grid, i - 1, j, wordPos + 1)
-					|| hasWord(word, grid, i - 1, j + 1, wordPos + 1)
-					|| hasWord(word, grid, i, j - 1, wordPos + 1)
-					|| hasWord(word, grid, i, j + 1, wordPos + 1)
-					|| hasWord(word, grid, i + 1, j - 1, wordPos + 1)
-					|| hasWord(word, grid, i + 1, j, wordPos + 1)
-					|| hasWord(word, grid, i + 1, j + 1, wordPos + 1);
-			return found;
+			return hasWord(word, grid, i - 1, j - 1, wordPos + 1, visited)
+					|| hasWord(word, grid, i - 1, j, wordPos + 1, visited)
+					|| hasWord(word, grid, i - 1, j + 1, wordPos + 1, visited)
+					|| hasWord(word, grid, i, j - 1, wordPos + 1, visited)
+					|| hasWord(word, grid, i, j + 1, wordPos + 1, visited)
+					|| hasWord(word, grid, i + 1, j - 1, wordPos + 1, visited)
+					|| hasWord(word, grid, i + 1, j, wordPos + 1, visited)
+					|| hasWord(word, grid, i + 1, j + 1, wordPos + 1, visited);
 		}
+		visited[i][j] = false;
 		return false;
 	}
 
