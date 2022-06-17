@@ -42,8 +42,8 @@ public class Solution2{
 				{'e', 'p'}
 		};//true
 		char[][] grid2 = {
-				{'p', 'e'},
-				{'e', 'e'}
+				{'p', 'd'},
+				{'d', 'd'}
 		}; //false
 		System.out.println(hasWord(word, grid1));
 		System.out.println(hasWord(word, grid2));
