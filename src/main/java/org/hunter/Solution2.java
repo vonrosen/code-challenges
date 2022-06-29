@@ -6,10 +6,10 @@ public class Solution2{
 	 * Boggle is a game where you are given a grid of letters and you make
 	 * words from the letters. This coding exercise is based on Boggle.
 	 * You must search the grid of letters to see if a word exists in it
-	 * base on Boggle rules.
+	 * based on Boggle rules.
 	 * Words are formed from adjoining letters.
 	 * Letters must join in the proper sequence to spell a word.
-	 * They may join horizontally, vertically, or diagonally, to the left, right, or up-and-down.
+	 * They may join horizontally, vertically, or diagonally.
 	 * You can't re-use the same letter (a letter in a specific position on the
 	 * board) more than once to spell a word.
 	 *
@@ -35,7 +35,8 @@ public class Solution2{
 
 	 boolean hasWord(String word, char[][] grid)
 
-	 to determine if a word exists in a grid using boggle rules
+	 to determine if a word exists in a grid using Boggle rules. Also
+	 provide some test cases.
 	 */
 
 //	static boolean hasWord(String word, char[][] grid) {
