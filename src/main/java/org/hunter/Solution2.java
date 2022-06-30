@@ -19,15 +19,25 @@ public class Solution2{
 	 *
 	 * Case 1:
 	 {
-		 {'p', 'o'},
-		 {'e', 'p'}
+	     {'x', 'x', 'x'}
+		 {'x', 'p', 'o'},
+		 {'x', 'x', 'p'}
 	 };
-	 // true because pop exists in grid: top left->top right->bottom right
+	 // true because pop exists in grid: middle->right->down
 
 	 Case 2:
 	 {
-		 {'p', 'd'},
-		 {'d', 'd'}
+		 {'x', 'x', 'x'}
+		 {'x', 'p', 'x'},
+		 {'x', 'x', 'x'}
+	 };
+	 //false because pop does not exist in grid
+
+	 Case 3:
+	 {
+		 {'x', 'x', 'x'}
+		 {'x', 'p', 'o'},
+		 {'x', 'x', 'x'}
 	 };
 	 //false because pop does not exist in grid
 
@@ -46,6 +56,7 @@ public class Solution2{
 	public static void main(String[] args) {
 		String word = "pop";
 		char[][] grid1 = {
+				{'x', 'o'},
 				{'p', 'o'},
 				{'e', 'p'}
 		};//true
