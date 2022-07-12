@@ -19,7 +19,7 @@ public class BoggleForInterview{
 	 *
 	 * Case 1:
 	 {
-	     {'x', 'x', 'p'}
+	     {'x', 'x', 'p'},
 		 {'x', 'p', 'o'},
 		 {'x', 'x', 'x'}
 	 };
@@ -27,7 +27,7 @@ public class BoggleForInterview{
 
 	 Case 2:
 	 {
-		 {'x', 'x', 'x'}
+		 {'x', 'x', 'x'},
 		 {'x', 'p', 'x'},
 		 {'x', 'x', 'x'}
 	 };
@@ -35,7 +35,7 @@ public class BoggleForInterview{
 
 	 Case 3:
 	 {
-		 {'x', 'x', 'x'}
+		 {'x', 'x', 'x'},
 		 {'x', 'p', 'o'},
 		 {'x', 'x', 'x'}
 	 };
