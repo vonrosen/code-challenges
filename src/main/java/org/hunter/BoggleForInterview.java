@@ -1,6 +1,6 @@
 package org.hunter;
 
-public class Solution2{
+public class BoggleForInterview{
 
 	/**
 	 * Boggle is a game where you are given a grid of letters and you make
@@ -19,11 +19,11 @@ public class Solution2{
 	 *
 	 * Case 1:
 	 {
-	     {'x', 'x', 'x'}
+	     {'x', 'x', 'p'}
 		 {'x', 'p', 'o'},
-		 {'x', 'x', 'p'}
+		 {'x', 'x', 'x'}
 	 };
-	 // true because pop exists in grid: middle->right->down
+	 // true because pop exists in grid: middle->right->up or topright->down->left
 
 	 Case 2:
 	 {
