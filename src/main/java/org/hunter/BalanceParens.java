@@ -47,6 +47,22 @@ public class BalanceParens{
 		System.out.println("PASSED!");
 	}
 
+	/**
+	 *
+	 write a function balanced that takes a String and returns
+	 true if the String has balanced parenthesis or brackets and false if not
+
+	 ( and [ and { are opening characters and ) and ] and } are closing 
+
+	 "((}}}" //false
+	 "{}" //true
+	 "({[]})" //true
+	 "({}[]{}) //true
+
+	 boolean balanced(String string)
+
+	 */
+
 	//time=O(n), space=O(n)
 	public static boolean balanced(String s){
 		Stack<Character> stack = new Stack<>();
