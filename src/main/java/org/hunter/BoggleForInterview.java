@@ -73,6 +73,15 @@ public class BoggleForInterview{
 				{'e', 'e'}
 		};//false
 		System.out.println(hasWord(w, wg1));
+
+		//test case to test reusing a node
+		String w2 = "beep";
+		char[][] wg2 = {
+				{'b', 'e', 'x'},
+				{'b', 'x', 'x'},
+				{'e', 'e', 'p'}
+		};//true
+		System.out.println(hasWord(w2, wg2));
 	}
 
 	static boolean hasWord(String word, char[][] grid) {
@@ -103,10 +112,10 @@ public class BoggleForInterview{
 		if(visited[i][j]){
 			return false;
 		}
-		visited[i][j] = true;
 		if(grid[i][j] == word.charAt(wordPos) && word.length() - 1 == wordPos){
 			return true;
 		}
+		visited[i][j] = true;
 		if(grid[i][j] == word.charAt(wordPos)){
 			return hasWord(word, grid, i - 1, j - 1, wordPos + 1, visited)
 					|| hasWord(word, grid, i - 1, j, wordPos + 1, visited)
