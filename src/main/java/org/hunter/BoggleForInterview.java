@@ -74,13 +74,14 @@ public class BoggleForInterview{
 		};//false
 		System.out.println(hasWord(w, wg1));
 
-		//test case to test reusing a node
-		String w2 = "beep";
+		//test case to test reusing a node that
+		//was marked visited from another path to find the word
+		String w2 = "topaz";
 		char[][] wg2 = {
-				{'b', 'e', 'x'},
-				{'b', 'x', 'x'},
-				{'e', 'e', 'p'}
-		};//true
+				{'x', 'o', 't', 'x'},
+				{'x', 'a', 'x', 'o'},
+				{'z', 'x', 'p', 'x'}
+		};;//true
 		System.out.println(hasWord(w2, wg2));
 	}
 
