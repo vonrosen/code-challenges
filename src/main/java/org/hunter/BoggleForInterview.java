@@ -76,6 +76,8 @@ public class BoggleForInterview{
 
 		//test case to test reusing a node that
 		//was marked visited from another path to find the word
+		//testing that set visited array node back to false
+		//when a search path doesn't find the word
 		String w2 = "topaz";
 		char[][] wg2 = {
 				{'x', 'o', 't', 'x'},
