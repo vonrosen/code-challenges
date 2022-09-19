@@ -22,6 +22,8 @@ public class BallRolls{
 		int [] points = new int[] {3,1,0};
 		System.out.println(ballRolls.isScoreValid(4, 0, points, 0, 11));
 		System.out.println(ballRolls.isScoreValid(4, 0, points, 0, 4));
+		System.out.println(ballRolls.isScoreValid(1, 0, points, 0, 4));
+		System.out.println(ballRolls.isScoreValid(1, 0, points, 0, 1));
 	}
 
 	private boolean isScoreValid(int totalRolls, int rollNumber, int [] points, int currentScore,
