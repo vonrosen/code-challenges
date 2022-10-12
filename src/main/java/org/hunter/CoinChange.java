@@ -3,9 +3,7 @@ package org.hunter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 //https://leetcode.com/problems/coin-change/
 public class CoinChange{
@@ -39,7 +37,7 @@ public class CoinChange{
 		System.out.println(coinChange.coinChangeMem(coins, amount));
 	}
 
-	//time complexity O(amount)
+	//time complexity O(amount * coins.length)
 	//space complexity O(amount)
 	public int coinChangeMem(int[] coins, int amount) {
 		if(amount == 0){
@@ -71,7 +69,7 @@ public class CoinChange{
 		return mem[amount];
 	}
 
-	//time complexity O(coins.length ^ ?) exponential
+	//time complexity O(coins.length ^ amount) exponential
 	public int coinChange(int[] coins, int amount) {
 		if(amount == 0){
 			return 0;
