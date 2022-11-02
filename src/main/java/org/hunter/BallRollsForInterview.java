@@ -45,7 +45,7 @@ public class BallRollsForInterview{
 		System.out.println(ballRollsForInterview.isScoreValidMem(1, points,1));
 	}
 
-	//time complexity = O(2^N) where N = points.length. space complexity = 0(1)
+	//time complexity = O(M^N) where M = points.length and N = totalRolls. space complexity = 0(1)
 	private boolean isScoreValid(int totalRolls, int rollNumber, int [] points, int currentScore,
 			int targetScore){
 		if(totalRolls == rollNumber){
