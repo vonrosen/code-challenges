@@ -5,9 +5,9 @@ public class BallRollsForInterview{
 	/**
 	 * There is a game where there are 3 colored squares each which is assigned a number of points.
 	 *
-	 * A number with red color - 3 points
-	 * A number with Black color - 1 point
-	 * A number with Green color - 0 points
+	 * Red color - 3 points
+	 * Black color - 1 point
+	 * Green color - 0 points
 	 *
 	 * The player rolls a ball and whatever square the ball lands on the player gets the number of points
 	 * Players roll the ball once for each round of the game and adds the points for a total score.
@@ -30,8 +30,6 @@ public class BallRollsForInterview{
 	 * red = 3 points, black = 1 point, green = 0 points
 	 * score to verify = 11
 	 * result = true - you can reach 9 if you roll 3 on the first 3 rounds, 1 on the 4th round and 1 on the 5th round
-	 *
-	 * @param args
 	 */
 	public static void main(String [] args){
 		BallRollsForInterview ballRollsForInterview = new BallRollsForInterview();
