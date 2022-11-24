@@ -2,7 +2,53 @@ package org.hunter;
 
 import java.util.Stack;
 
-public class BalanceParens{
+public class BalanceParensForInterview{
+
+	/**
+	 *
+	 write a function balanced that takes a String and returns
+	 true if the String has balanced parenthesis or brackets and false if not
+
+	 ( and [ and { are opening characters and ) and ] and } are closing
+
+	 "((}}}" //false
+	 "{}" //true
+	 "({[]})" //true
+	 "({}[]{}) //true
+
+	 boolean balanced(String string)
+
+	 */
+
+	//time=O(n), space=O(n)
+	public static boolean balanced(String s){
+		Stack<Character> stack = new Stack<>();
+		for(int i = 0; i < s.length(); ++i){
+			Character c = s.charAt(i);
+			if (c == '{' || c == '[' || c == '('){
+				stack.push(c);
+			}
+
+			if (c == '}' || c == ']' || c == ')'){
+				if(stack.size() == 0){
+					return false;
+				}
+				Character popped = stack.pop();
+				if(c == '}' && popped.charValue() != '{'){
+					return false;
+				}
+
+				if(c == ']' && popped.charValue() != '['){
+					return false;
+				}
+
+				if(c == ')' && popped.charValue() != '('){
+					return false;
+				}
+			}
+		}
+		return stack.size() == 0;
+	}
 
 	public static void main(String [] args) throws Exception{
 		String s1 = "{{{{{{{{";
@@ -45,52 +91,6 @@ public class BalanceParens{
 
 	private static void good(){
 		System.out.println("PASSED!");
-	}
-
-	/**
-	 *
-	 write a function balanced that takes a String and returns
-	 true if the String has balanced parenthesis or brackets and false if not
-
-	 ( and [ and { are opening characters and ) and ] and } are closing 
-
-	 "((}}}" //false
-	 "{}" //true
-	 "({[]})" //true
-	 "({}[]{}) //true
-
-	 boolean balanced(String string)
-
-	 */
-
-	//time=O(n), space=O(n)
-	public static boolean balanced(String s){
-		Stack<Character> stack = new Stack<>();
-		for(int i = 0; i < s.length(); ++i){
-			Character c = s.charAt(i);
-			if (c == '{' || c == '[' || c == '('){
-				stack.push(c);
-			}
-
-			if (c == '}' || c == ']' || c == ')'){
-				if(stack.size() == 0){
-					return false;
-				}
-				Character popped = stack.pop();
-				if(c == '}' && popped.charValue() != '{'){
-					return false;
-				}
-
-				if(c == ']' && popped.charValue() != '['){
-					return false;
-				}
-
-				if(c == ')' && popped.charValue() != '('){
-					return false;
-				}
-			}
-		}
-		return stack.size() == 0;
 	}
 
 }
