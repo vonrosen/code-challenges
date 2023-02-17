@@ -18,6 +18,7 @@ public class JumpGame{
 		System.out.println(jumpGame.canJump(nums));
 	}
 
+	//time O(2^N) without memoization, space = O(N) with memoization
 	public boolean canJump(int[] nums) {
 		Boolean [] mem = new Boolean[nums.length];
 		return canJump(0, nums, mem);
