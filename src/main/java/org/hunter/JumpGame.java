@@ -39,7 +39,7 @@ public class JumpGame{
 		}
 		for(int i = 1; i <= nums[pos]; ++i){
 			boolean result = canJump(pos + i, nums, mem);
-			mem[pos + 1] = result;
+			mem[pos] = result;
 			if(result){
 				return true;
 			}
