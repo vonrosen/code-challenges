@@ -28,7 +28,7 @@ public class RemoveLeafNodes{
 		return deletedNodes;
 	}
 
-	//time complexity = 2*O(N) = O(N)
+	//time complexity = depth * 2 * O(N)
 	public void findLeaves(TreeNode root, List<Integer> deleted){
 		if(root == null){
 			return;
