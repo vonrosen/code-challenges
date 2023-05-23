@@ -6,6 +6,7 @@ import java.util.Stack;
 
 public class BoxStacks{
 
+	//stack all the boxes into stackA such that biggest to smallest from bottom to top
 	public static void main(String [] args){
 		int [] boxesA = new int[]{10};
 		int [] boxesB = new int[]{20};
