@@ -1,5 +1,8 @@
 package org.hunter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hunter.LRU.LinkedList;
 
 public class ReverseLinkedList2{
@@ -29,6 +32,28 @@ public class ReverseLinkedList2{
 		return prev;
 	}
 
+	static class Stuff<T>{
+		T t;
+		Stuff(T t){
+			this.t = t;
+		}
+
+		void eval(T param){
+			System.out.println(param.equals(t));
+		}
+	}
+
+	Stuff<?> getIt(){
+		List<Stuff<?>> list = new ArrayList<>();
+		list.add(new Stuff<>(1));
+		list.add(new Stuff<>("a"));
+		return list.get(0);
+	}
+
+	<T> void doIt(T param){
+		Stuff<T> stuff = (Stuff<T>)getIt();
+		stuff.eval(param);
+	}
 
 	static class LinkedListNode{
 		LinkedListNode next;
