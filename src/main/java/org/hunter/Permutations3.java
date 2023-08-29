@@ -18,7 +18,7 @@ public class Permutations3{
 		System.out.println(permutations);
 	}
 
-	//time = O(N^N) approx, space = O(N^N) approx
+	//time = O(N * N!)
 	public List<List<Integer>> permute(int [] nums){
 		List<List<Integer>> permutations = new ArrayList<>();
 		Map<Integer,Integer> map = new HashMap<>();
