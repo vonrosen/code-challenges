@@ -282,31 +282,33 @@ public class Solution1{
 		return Math.max(left, right);
 	}
 
+	int diameter = 0;
 	public int diameterOfBinaryTree(TreeNode root) {
-		return diameterOfBinaryTree2(root)[1];
+		diameterOfBinaryTree2(root);
+		return diameter;
 	}
-
-	public int [] diameterOfBinaryTree2(TreeNode root) {
+	public int diameterOfBinaryTree2(TreeNode root) {
 		if(root == null) {
-			return new int[]{ 0, 0 };
+			return 0;
 		}
 
 		if (root.left == null && root.right == null) {
-			return new int[]{ 0, 0 };
+			return 0;
 		}
-		int [] left = new int[2];
-		int [] right = new int[2];
+		int left = 0, right = 0;
 		if (root.left != null) {
-			left = diameterOfBinaryTree2(root.left);
-			left[0]++;
+			left = diameterOfBinaryTree(root.left);
+			left++;
 		}
 
 		if(root.right != null) {
-			right = diameterOfBinaryTree2(root.right);
-			right[0]++;
+			right = diameterOfBinaryTree(root.right);
+			right++;
 		}
 
-		return new int[]{ Math.max(left[0], right[0]), Math.max(left[0] + right[0], Math.max(left[1], right[1])) };
+		diameter = Math.max(diameter, left + right);
+
+		return Math.max(left, right);
 	}
 }
 
