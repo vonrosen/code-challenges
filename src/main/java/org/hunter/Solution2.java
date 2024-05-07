@@ -16,6 +16,18 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
+		System.out.println(solution2.countComponents(4, new int[][]{
+				{2, 3},
+				{1, 2},
+				{1, 3},
+		}));
+
+//		TreeNode node = new TreeNode(4);
+//		node.left = new TreeNode(2);
+//		node.left.left = new TreeNode(1);
+//		node.left.right = new TreeNode(3);
+//		node.right = new TreeNode(7);
+//		solution2.insertIntoBST(node, 5);
 
 //		ListNode head = new ListNode(3);
 //		head.next = new ListNode(5);
@@ -37,11 +49,11 @@ public class Solution2{
 //		}
 
 		//[100],[80],[60],[70],[60],[75],[85]
-		StockSpanner stockSpanner = new StockSpanner();
-		stockSpanner.next(100);
-		stockSpanner.next(80);
-		stockSpanner.next(60);
-		stockSpanner.next(70);
+//		StockSpanner stockSpanner = new StockSpanner();
+//		stockSpanner.next(100);
+//		stockSpanner.next(80);
+//		stockSpanner.next(60);
+//		stockSpanner.next(70);
 //		stockSpanner.next(60);
 //		stockSpanner.next(75);
 //		stockSpanner.next(85);
@@ -532,41 +544,170 @@ public class Solution2{
 		if(root == null) {
 			return List.of();
 		}
-		Deque<TreeNode> queue = new LinkedList<>();
-
+		Queue<TreeNode> queue = new LinkedList<>();
 		List<List<Integer>> ans = new ArrayList<>();
-
 		boolean startLeft = true;
 		queue.add(root);
 		while(!queue.isEmpty()) {
 			int size = queue.size();
-			List<Integer> list = new LinkedList<>();
+			Deque<Integer> deque = new LinkedList<>();
 			for(int i = 0; i < size; ++i) {
-				TreeNode next = queue.removeFirst();
+				TreeNode next = queue.remove();
 				if(startLeft) {
-					if(next.left != null) {
-						queue.addFirst(next.left);
-					}
-					if(next.right != null) {
-						queue.addFirst(next.right);
-					}
+					deque.addLast(next.val);
 				}else {
-					if(next.left != null) {
-						queue.addLast(next.left);
-					}
-					if(next.right != null) {
-						queue.addLast(next.right);
-					}
+					deque.addFirst(next.val);
 				}
-				list.add(next.val);
+				if(next.left != null){
+					queue.add(next.left);
+				}
+				if(next.right != null){
+					queue.add(next.right);
+				}
 			}
 			startLeft = !startLeft;
-			ans.add(list);
+			ans.add(new ArrayList<>(deque));
 		}
 		return ans;
 	}
 
+	public TreeNode insertIntoBST(TreeNode root, int val) {
+		if(root == null){
+			return new TreeNode(val);
+		}
+		dfsInsertIntoBST(root, val);
+		return root;
+	}
 
+	public boolean dfsInsertIntoBST(TreeNode root, int val) {
+		if(root == null){
+			return false;
+		}
+		boolean inserted;
+		if(val < root.val){
+			inserted = dfsInsertIntoBST(root.left, val);
+			if(inserted){
+				return true;
+			}
+		}
+		if(val > root.val){
+			inserted = dfsInsertIntoBST(root.right, val);
+			if(inserted){
+				return true;
+			}
+		}
+
+		if(val < root.val){
+			TreeNode newNode = new TreeNode(val);
+			newNode.left = root.left;
+			root.left = newNode;
+			return true;
+		}
+
+		if(val > root.val){
+			TreeNode newNode = new TreeNode(val);
+			newNode.right = root.right;
+			root.right = newNode;
+			return true;
+		}
+		return false;
+	}
+
+	double closest = Double.MAX_VALUE;
+	List<Integer> possible = new ArrayList<>();
+
+	public int closestValue(TreeNode root, double target) {
+		dfsClosestValue(root, target);
+		int ans = Integer.MAX_VALUE;
+		for(int val : possible){
+			ans = Math.min(ans, val);
+		}
+		return ans;
+	}
+	public void dfsClosestValue(TreeNode root, double target) {
+		if(root == null){
+			return;
+		}
+		if(Math.abs(target - root.val) < closest){
+			possible.clear();
+			possible.add(root.val);
+			closest = Math.abs(target - root.val);
+		}else if (Math.abs(target - root.val) == closest){
+			possible.add(root.val);
+		}
+		dfsClosestValue(root.left, target);
+		dfsClosestValue(root.right, target);
+	}
+
+	public boolean validPath(int n, int[][] edges, int source, int destination) {
+		Map<Integer,List<Integer>> map = new HashMap<>();
+		for (int i = 0; i < edges.length; ++i){
+			int x = edges[i][0], y = edges[i][1];
+			map.putIfAbsent(x, new ArrayList<>());
+			map.putIfAbsent(y, new ArrayList<>());
+			map.get(x).add(y);
+			map.get(y).add(x);
+		}
+		if(edges.length == 0){
+			for(int i = 0; i < n; ++i){
+				map.put(i, List.of(i));
+			}
+		}
+		boolean [] seen = new boolean[n];
+		return dfs(map, source, destination, seen);
+	}
+
+	boolean dfs(Map<Integer,List<Integer>> graph, int source, int destination, boolean [] seen){
+		if(seen[source]){
+			return false;
+		}
+		seen[source] = true;
+		for(int y: graph.get(source)){
+			if (y == destination){
+				return true;
+			}
+			boolean result = dfs(graph, y, destination, seen);
+			if(result){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int countComponents(int n, int[][] edges) {
+		Map<Integer,List<Integer>> graph = new HashMap<>();
+		for(int i = 0; i < edges.length; ++i){
+			int x = edges[i][0], y = edges[i][1];
+			graph.putIfAbsent(x, new ArrayList<>());
+			graph.putIfAbsent(y, new ArrayList<>());
+			graph.get(x).add(y);
+			graph.get(y).add(x);
+		}
+
+		int ans = 0;
+		Set<Integer> seen = new HashSet<>();
+		for(int i = 0; i < n; ++i){
+			if(graph.get(i) == null){
+				graph.put(i, List.of(i));
+			}
+			if(!seen.contains(i)){
+				seen.add(i);
+				++ans;
+				dfsCountComponents(i, graph, seen);
+			}
+
+		}
+		return ans;
+	}
+
+	void dfsCountComponents(int node, Map<Integer,List<Integer>> graph, Set<Integer> seen){
+		for(int y : graph.get(node)) {
+			if(!seen.contains(y)){
+				seen.add(y);
+				dfsCountComponents(y, graph, seen);
+			}
+		}
+	}
 }
 
 class TreeNode {
