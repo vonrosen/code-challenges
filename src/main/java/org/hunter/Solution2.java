@@ -2,6 +2,8 @@ package org.hunter;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,11 +18,8 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		System.out.println(solution2.countComponents(4, new int[][]{
-				{2, 3},
-				{1, 2},
-				{1, 3},
-		}));
+		int [][] maze = new int[][]{{-1,4,-1},{6,2,6},{-1,3,-1}};
+		System.out.println(solution2.snakesAndLadders(maze));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -708,6 +707,166 @@ public class Solution2{
 			}
 		}
 	}
+
+	class State1{
+		int x;
+		int y;
+		int steps;
+		State1(int x, int y, int steps){
+			this.x = x;
+			this.y = y;
+			this.steps = steps;
+		}
+	}
+
+	int [][] directions = new int[][]{
+			{-1, 0},
+			{0, -1},
+			{0, 1},
+			{1, 0},
+	};
+
+	public int nearestExit(char[][] maze, int[] entrance) {
+		Queue<State1> queue = new LinkedList<>();
+		queue.add(new State1(entrance[0], entrance[1], 0));
+
+		boolean [][] seen = new boolean[maze.length][maze[0].length];
+		seen[entrance[0]][entrance[1]] = true;
+
+		while(!queue.isEmpty()){
+			State1 state = queue.remove();
+			int x = state.x, y = state.y, steps = state.steps;
+			if(maze[x][y] == '.' && (x == maze.length - 1 || y == maze[0].length - 1 || x == 0 || y == 0)
+					&& !(x == entrance[0] && y == entrance[1])){
+				return steps;
+			}
+			for(int i = 0; i < directions.length; ++i){
+				int newX = x + directions[i][0], newY = y + directions[i][1];
+				if(valid1(maze, newX, newY) && !seen[newX][newY]){
+					seen[newX][newY] = true;
+					queue.add(new State1(newX, newY, steps + 1));
+				}
+			}
+		}
+		return -1;
+	}
+
+	boolean valid1(char[][] maze, int x, int y){
+		if(x < maze.length && x >= 0 && y < maze[0].length && y >= 0 && maze[x][y] == '.'){
+			return true;
+		}
+		return false;
+	}
+
+	class State2{
+		int x;
+		int y;
+		int value;
+		int steps;
+		boolean snaked = false;
+		State2(int x, int y, int value, int steps, boolean snaked){
+			this.x = x;
+			this.y = y;
+			this.value = value;
+			this.steps = steps;
+			this.snaked = snaked;
+		}
+	}
+
+
+	public int snakesAndLadders(int[][] board) {
+//		Map<Integer,Integer[]> map = new HashMap<>();
+//		int x = board.length - 1, y = 0, inc = 1;
+//		for(int i = 1; i <= board.length * board.length; ++i){
+//			map.put(i, new Integer[]{x, y});
+//			if(i % board.length == 0){
+//				x--;
+//				if(inc == 1){
+//					inc = -1;
+//				}else{
+//					inc = 1;
+//				}
+//			}else{
+//				y += inc;
+//			}
+//		}
+//		Queue<State2> queue = new LinkedList<>();
+//		queue.add(new State2(board.length - 1, 0, 1, 0, false));
+//		boolean [][] seen = new boolean[board.length][board[0].length];
+//		seen[board.length - 1][0] = true;
+//
+//		while(!queue.isEmpty()){
+//			State2 state = queue.remove();
+//			int value = state.value, steps = state.steps;
+//			x = state.x;
+//			y = state.y;
+//			boolean snaked = state.snaked;
+//
+//			if(x == 0 && y == 0){
+//				return steps;
+//			}
+//			for (int newValue = value + 1; newValue <= Math.min(value + 6, board.length * board.length); ++newValue){
+//				Integer[] xy = map.get(newValue);
+//				if(valid2(newValue, board, map) && !seen[xy[0]][xy[1]]){
+//					seen[xy[0]][xy[1]] = true;
+//					if(board[xy[0]][xy[1]] == -1 || snaked){
+//						queue.add(new State2(xy[0], xy[1], newValue, steps + 1, false));
+//					}else{
+//						int destination = board[xy[0]][xy[1]];
+//						xy = map.get(destination);
+//						queue.add(new State2(xy[0], xy[1], destination, steps + 1, true));
+//					}
+//				}
+//			}
+//		}
+//		return -1;
+
+
+		public int snakesAndLadders(int[][] board) {
+			int n = board.length;
+			Pair<Integer, Integer>[] cells = new Pair[n * n + 1];
+			int label = 1;
+			Integer[] columns = new Integer[n];
+			for (int i = 0; i < n; i++) {
+				columns[i] = i;
+			}
+			for (int row = n - 1; row >= 0; row--) {
+				for (int column : columns) {
+					cells[label++] = new Pair<>(row, column);
+				}
+				Collections.reverse(Arrays.asList(columns));
+			}
+			int[] dist = new int[n * n + 1];
+			Arrays.fill(dist, -1);
+			Queue<Integer> q = new LinkedList<Integer>();
+			dist[1] = 0;
+			q.add(1);
+			while (!q.isEmpty()) {
+				int curr = q.remove();
+				for (int next = curr + 1; next <= Math.min(curr + 6, n * n); next++) {
+					int row = cells[next].getKey(), column = cells[next].getValue();
+					int destination = board[row][column] != -1 ? board[row][column] : next;
+					if (dist[destination] == -1) {
+						dist[destination] = dist[curr] + 1;
+						q.add(destination);
+					}
+				}
+			}
+			return dist[n * n];
+		}
+	}
+
+	boolean valid2(int value, int [][] board, Map<Integer,Integer[]> map){
+		Integer[] xy = map.get(value);
+		if(xy == null){
+			return false;
+		}
+		if(xy[0] >= 0 && xy[0] < board.length && xy[1] >= 0 && xy[1] < board[0].length){
+			return true;
+		}
+		return false;
+	}
+
 }
 
 class TreeNode {
