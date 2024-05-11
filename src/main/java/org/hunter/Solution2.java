@@ -18,8 +18,13 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		int [][] maze = new int[][]{{-1,4,-1},{6,2,6},{-1,3,-1}};
-		System.out.println(solution2.snakesAndLadders(maze));
+		//"AACCGGTT"
+		//"AAACGGTA"
+		//["AACCGGTA","AACCGCTA","AAACGGTA"]
+		String start = "AACCGGTT";
+		String end = "AAACGGTA";
+		String [] bank = new String[]{"AACCGGTA","AACCGCTA","AAACGGTA"};
+		System.out.println(solution2.minMutation(start, end, bank));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -763,97 +768,61 @@ public class Solution2{
 		int y;
 		int value;
 		int steps;
-		boolean snaked = false;
-		State2(int x, int y, int value, int steps, boolean snaked){
+		State2(int x, int y, int value, int steps){
 			this.x = x;
 			this.y = y;
 			this.value = value;
 			this.steps = steps;
-			this.snaked = snaked;
 		}
 	}
 
 
 	public int snakesAndLadders(int[][] board) {
-//		Map<Integer,Integer[]> map = new HashMap<>();
-//		int x = board.length - 1, y = 0, inc = 1;
-//		for(int i = 1; i <= board.length * board.length; ++i){
-//			map.put(i, new Integer[]{x, y});
-//			if(i % board.length == 0){
-//				x--;
-//				if(inc == 1){
-//					inc = -1;
-//				}else{
-//					inc = 1;
-//				}
-//			}else{
-//				y += inc;
-//			}
-//		}
-//		Queue<State2> queue = new LinkedList<>();
-//		queue.add(new State2(board.length - 1, 0, 1, 0, false));
-//		boolean [][] seen = new boolean[board.length][board[0].length];
-//		seen[board.length - 1][0] = true;
-//
-//		while(!queue.isEmpty()){
-//			State2 state = queue.remove();
-//			int value = state.value, steps = state.steps;
-//			x = state.x;
-//			y = state.y;
-//			boolean snaked = state.snaked;
-//
-//			if(x == 0 && y == 0){
-//				return steps;
-//			}
-//			for (int newValue = value + 1; newValue <= Math.min(value + 6, board.length * board.length); ++newValue){
-//				Integer[] xy = map.get(newValue);
-//				if(valid2(newValue, board, map) && !seen[xy[0]][xy[1]]){
-//					seen[xy[0]][xy[1]] = true;
-//					if(board[xy[0]][xy[1]] == -1 || snaked){
-//						queue.add(new State2(xy[0], xy[1], newValue, steps + 1, false));
-//					}else{
-//						int destination = board[xy[0]][xy[1]];
-//						xy = map.get(destination);
-//						queue.add(new State2(xy[0], xy[1], destination, steps + 1, true));
-//					}
-//				}
-//			}
-//		}
-//		return -1;
-
-
-		public int snakesAndLadders(int[][] board) {
-			int n = board.length;
-			Pair<Integer, Integer>[] cells = new Pair[n * n + 1];
-			int label = 1;
-			Integer[] columns = new Integer[n];
-			for (int i = 0; i < n; i++) {
-				columns[i] = i;
-			}
-			for (int row = n - 1; row >= 0; row--) {
-				for (int column : columns) {
-					cells[label++] = new Pair<>(row, column);
+		Map<Integer,Integer[]> map = new HashMap<>();
+		int x = board.length - 1, y = 0, inc = 1;
+		for(int i = 1; i <= board.length * board.length; ++i){
+			map.put(i, new Integer[]{x, y});
+			if(i % board.length == 0){
+				x--;
+				if(inc == 1){
+					inc = -1;
+				}else{
+					inc = 1;
 				}
-				Collections.reverse(Arrays.asList(columns));
+			}else{
+				y += inc;
 			}
-			int[] dist = new int[n * n + 1];
-			Arrays.fill(dist, -1);
-			Queue<Integer> q = new LinkedList<Integer>();
-			dist[1] = 0;
-			q.add(1);
-			while (!q.isEmpty()) {
-				int curr = q.remove();
-				for (int next = curr + 1; next <= Math.min(curr + 6, n * n); next++) {
-					int row = cells[next].getKey(), column = cells[next].getValue();
-					int destination = board[row][column] != -1 ? board[row][column] : next;
-					if (dist[destination] == -1) {
-						dist[destination] = dist[curr] + 1;
-						q.add(destination);
+		}
+		Integer [] endXY = map.get(board.length * board.length);
+		Queue<State2> queue = new LinkedList<>();
+		queue.add(new State2(board.length - 1, 0, 1, 0));
+		boolean [][] seen = new boolean[board.length][board[0].length];
+		seen[board.length - 1][0] = true;
+
+		while(!queue.isEmpty()){
+			State2 state = queue.remove();
+			int value = state.value, steps = state.steps;
+			x = state.x;
+			y = state.y;
+
+			if(x == endXY[0] && y == endXY[1]){
+				return steps;
+			}
+			for (int newValue = value + 1; newValue <= Math.min(value + 6, board.length * board.length); ++newValue){
+				Integer[] xy = map.get(newValue);
+				if(valid2(newValue, board, map) && !seen[xy[0]][xy[1]]){
+					seen[xy[0]][xy[1]] = true;
+					if(board[xy[0]][xy[1]] == -1){
+						queue.add(new State2(xy[0], xy[1], newValue, steps + 1));
+					}else{
+						int destination = board[xy[0]][xy[1]];
+						xy = map.get(destination);
+						queue.add(new State2(xy[0], xy[1], destination, steps + 1));
 					}
 				}
 			}
-			return dist[n * n];
 		}
+		return -1;
 	}
 
 	boolean valid2(int value, int [][] board, Map<Integer,Integer[]> map){
@@ -865,6 +834,97 @@ public class Solution2{
 			return true;
 		}
 		return false;
+	}
+
+	class Mutation{
+		String gene;
+		int steps;
+
+		Mutation(String gene, int steps){
+			this.gene = gene;
+			this.steps = steps;
+		}
+	}
+
+	public int minMutation(String startGene, String endGene, String[] bank) {
+		Queue<Mutation> queue = new LinkedList<>();
+		Set<String> valid = new HashSet<>();
+		for(int i = 0; i < bank.length; ++i){
+			valid.add(bank[i]);
+		}
+
+		queue.add(new Mutation(startGene, 0));
+		Set<String> seen = new HashSet<>();
+		seen.add(startGene);
+
+		while(!queue.isEmpty()){
+			Mutation mutation = queue.remove();
+			String gene = mutation.gene;
+			int steps = mutation.steps;
+			if(mutation.gene.equals(endGene)){
+				return steps;
+			}
+
+			for(String geneMutation: getMutations(gene)){
+				if(valid.contains(geneMutation) && !seen.contains(geneMutation)){
+					seen.add(geneMutation);
+					queue.add(new Mutation(geneMutation, steps + 1));
+				}
+			}
+		}
+		return -1;
+	}
+
+	List<String> getMutations(String gene){
+		char [] chars = new char[]{'A', 'C', 'G', 'T'};
+		List<String> mutations = new ArrayList<>();
+		for(int i = 0; i < gene.length(); ++i){
+			for(int j = 0; j < 4; ++j){
+				if(gene.charAt(i) != chars[j]){
+					if(i == 0){
+						mutations.add(chars[j] + gene.substring(i + 1));
+					}else if (i == gene.length() - 1){
+						mutations.add(gene.substring(0, gene.length() - 1) + chars[j]);
+					}else{
+						mutations.add(gene.substring(0, i) + chars[j] + gene.substring(i + 1));
+					}
+				}
+			}
+		}
+		return mutations;
+	}
+
+
+	public boolean canReach(int[] arr, int start) {
+		boolean [] seen = new boolean[arr.length];
+		return dfsCanReach(start, arr, seen);
+	}
+
+	boolean dfsCanReach(int start, int [] arr, boolean [] seen){
+		if(seen[start]){
+			return true;
+		}
+		if(arr[start] == 0){
+			return true;
+		}
+		seen[start] = true;
+		boolean canReachFirst = false, canReachSecond = false;
+		if(validCanReach(start + arr[start], arr)){
+			seen[start + arr[start + arr[start]]] = true;
+			canReachFirst = dfsCanReach(start + arr[start], arr, seen);
+		}
+		if(canReachFirst){
+			return canReachFirst;
+		}
+		if(validCanReach(start - arr[start], arr)){
+			seen[start - arr[start - arr[start]]] = true;
+			canReachSecond = dfsCanReach(start - arr[start], arr, seen);
+		}
+		return canReachSecond;
+	}
+
+	boolean validCanReach(int start, int [] arr){
+		return start >= 0 && start < arr.length;
 	}
 
 }
