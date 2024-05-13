@@ -18,13 +18,9 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		//"AACCGGTT"
-		//"AAACGGTA"
-		//["AACCGGTA","AACCGCTA","AAACGGTA"]
-		String start = "AACCGGTT";
-		String end = "AAACGGTA";
-		String [] bank = new String[]{"AACCGGTA","AACCGCTA","AAACGGTA"};
-		System.out.println(solution2.minMutation(start, end, bank));
+		String begin = "hit";
+		String end = "cog";
+		System.out.println(solution2.ladderLength(begin, end, List.of("hot","dot","dog","lot","log","cog")));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -902,7 +898,7 @@ public class Solution2{
 
 	boolean dfsCanReach(int start, int [] arr, boolean [] seen){
 		if(seen[start]){
-			return true;
+			return false;
 		}
 		if(arr[start] == 0){
 			return true;
@@ -910,14 +906,12 @@ public class Solution2{
 		seen[start] = true;
 		boolean canReachFirst = false, canReachSecond = false;
 		if(validCanReach(start + arr[start], arr)){
-			seen[start + arr[start + arr[start]]] = true;
 			canReachFirst = dfsCanReach(start + arr[start], arr, seen);
 		}
 		if(canReachFirst){
 			return canReachFirst;
 		}
 		if(validCanReach(start - arr[start], arr)){
-			seen[start - arr[start - arr[start]]] = true;
 			canReachSecond = dfsCanReach(start - arr[start], arr, seen);
 		}
 		return canReachSecond;
@@ -927,6 +921,89 @@ public class Solution2{
 		return start >= 0 && start < arr.length;
 	}
 
+	public int maximumDetonation(int[][] bombs) {
+		int ans = 1;
+		for(int i = 0; i < bombs.length; ++i){
+			ans = Math.max(ans, dfsBombs(i, bombs, new boolean[bombs.length]));
+		}
+		return ans;
+	}
+
+	int dfsBombs(int i, int[][] bombs, boolean[] seen){
+		if(seen[i]){
+			return -1;
+		}
+		seen[i] = true;
+		int ans = 1;
+		for (int j = 0; j < bombs.length; ++j){
+			if(i != j && inRange(i, j, bombs) && !seen[j]){
+				ans += dfsBombs(j, bombs, seen);
+			}
+		}
+		return ans;
+	}
+
+	boolean inRange(int i, int j, int[][] bombs){
+		int jx = bombs[j][0], jy = bombs[j][1];
+		int x = bombs[i][0], y = bombs[i][1], r = bombs[i][2];
+		double d = Math.sqrt(Math.pow(jx - x, 2) + Math.pow(jy - y, 2));
+		return d <= r;
+	}
+
+	class State3{
+		String word;
+		int steps;
+		State3(String word, int steps){
+			this.word = word;
+			this.steps = steps;
+		}
+	}
+
+	public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+		Map<String,List<String>> graph = new HashMap<>();
+		graph.put(beginWord, getAdjacent(beginWord, wordList));
+		for(int i = 0; i < wordList.size(); ++i){
+			String word = wordList.get(i);
+			graph.put(word, getAdjacent(word, wordList));
+		}
+		Queue<State3> queue = new LinkedList<>();
+		queue.add(new State3(beginWord, 1));
+		Set<String> seen = new HashSet<>();
+		seen.add(beginWord);
+		while(!queue.isEmpty()){
+			State3 state = queue.remove();
+			String word = state.word;
+			int steps = state.steps;
+			if (word.equals(endWord)){
+				return steps;
+			}
+			for(String adjacent : graph.getOrDefault(word, List.of())){
+				if(!seen.contains(adjacent)){
+					seen.add(adjacent);
+					queue.add(new State3(adjacent, steps + 1));
+				}
+			}
+		}
+		return 0;
+	}
+
+	List<String> getAdjacent(String word, List<String> compareWords){
+		List<String> adj = new ArrayList<>();
+		char [] wordArray = word.toCharArray();
+		for(int i = 0; i < compareWords.size(); ++i){
+			String compare = compareWords.get(i);
+			int diff = 0;
+			for(int j = 0; j < wordArray.length; ++j){
+				if(wordArray[j] != compare.charAt(j)){
+					++diff;
+				}
+			}
+			if(diff == 1){
+				adj.add(compare);
+			}
+		}
+		return adj;
+	}
 }
 
 class TreeNode {
