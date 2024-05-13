@@ -4,12 +4,14 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -1004,6 +1006,40 @@ public class Solution2{
 		}
 		return adj;
 	}
+
+	public int minStoneSum(int[] piles, int k) {
+		Queue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+		for(int i = 0; i < piles.length; ++i){
+			maxHeap.add(piles[i]);
+		}
+
+		for(int i = 0; i < k; ++i){
+			int max = maxHeap.remove();
+			maxHeap.add(max - (max / 2));
+		}
+
+		int ans = 0;
+		while(!maxHeap.isEmpty()){
+			ans += maxHeap.remove();
+		}
+		return ans;
+	}
+
+	public int connectSticks(int[] sticks) {
+		Queue<Integer> queue = new PriorityQueue<>();
+		for(int i = 0; i < sticks.length; ++i){
+			queue.add(sticks[i]);
+		}
+		int minCost = 0;
+		while(queue.size() > 1){
+			int cost1 = queue.remove();
+			int cost2 = queue.remove();
+			queue.add((cost1 + cost2));
+			minCost += (cost1 + cost2);
+		}
+		return minCost;
+	}
+
 }
 
 class TreeNode {
