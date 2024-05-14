@@ -2,12 +2,16 @@ package org.hunter;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -16,11 +20,9 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		System.out.println(solution2.countComponents(4, new int[][]{
-				{2, 3},
-				{1, 2},
-				{1, 3},
-		}));
+		String begin = "hit";
+		String end = "cog";
+		System.out.println(solution2.ladderLength(begin, end, List.of("hot","dot","dog","lot","log","cog")));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -762,6 +764,337 @@ public class Solution2{
 		}
 		return ans;
 	}
+
+	class State1{
+		int x;
+		int y;
+		int steps;
+		State1(int x, int y, int steps){
+			this.x = x;
+			this.y = y;
+			this.steps = steps;
+		}
+	}
+
+	int [][] directions = new int[][]{
+			{-1, 0},
+			{0, -1},
+			{0, 1},
+			{1, 0},
+	};
+
+	public int nearestExit(char[][] maze, int[] entrance) {
+		Queue<State1> queue = new LinkedList<>();
+		queue.add(new State1(entrance[0], entrance[1], 0));
+
+		boolean [][] seen = new boolean[maze.length][maze[0].length];
+		seen[entrance[0]][entrance[1]] = true;
+
+		while(!queue.isEmpty()){
+			State1 state = queue.remove();
+			int x = state.x, y = state.y, steps = state.steps;
+			if(maze[x][y] == '.' && (x == maze.length - 1 || y == maze[0].length - 1 || x == 0 || y == 0)
+					&& !(x == entrance[0] && y == entrance[1])){
+				return steps;
+			}
+			for(int i = 0; i < directions.length; ++i){
+				int newX = x + directions[i][0], newY = y + directions[i][1];
+				if(valid1(maze, newX, newY) && !seen[newX][newY]){
+					seen[newX][newY] = true;
+					queue.add(new State1(newX, newY, steps + 1));
+				}
+			}
+		}
+		return -1;
+	}
+
+	boolean valid1(char[][] maze, int x, int y){
+		if(x < maze.length && x >= 0 && y < maze[0].length && y >= 0 && maze[x][y] == '.'){
+			return true;
+		}
+		return false;
+	}
+
+	class State2{
+		int x;
+		int y;
+		int value;
+		int steps;
+		State2(int x, int y, int value, int steps){
+			this.x = x;
+			this.y = y;
+			this.value = value;
+			this.steps = steps;
+		}
+	}
+
+
+	public int snakesAndLadders(int[][] board) {
+		Map<Integer,Integer[]> map = new HashMap<>();
+		int x = board.length - 1, y = 0, inc = 1;
+		for(int i = 1; i <= board.length * board.length; ++i){
+			map.put(i, new Integer[]{x, y});
+			if(i % board.length == 0){
+				x--;
+				if(inc == 1){
+					inc = -1;
+				}else{
+					inc = 1;
+				}
+			}else{
+				y += inc;
+			}
+		}
+		Integer [] endXY = map.get(board.length * board.length);
+		Queue<State2> queue = new LinkedList<>();
+		queue.add(new State2(board.length - 1, 0, 1, 0));
+		boolean [][] seen = new boolean[board.length][board[0].length];
+		seen[board.length - 1][0] = true;
+
+		while(!queue.isEmpty()){
+			State2 state = queue.remove();
+			int value = state.value, steps = state.steps;
+			x = state.x;
+			y = state.y;
+
+			if(x == endXY[0] && y == endXY[1]){
+				return steps;
+			}
+			for (int newValue = value + 1; newValue <= Math.min(value + 6, board.length * board.length); ++newValue){
+				Integer[] xy = map.get(newValue);
+				if(valid2(newValue, board, map) && !seen[xy[0]][xy[1]]){
+					seen[xy[0]][xy[1]] = true;
+					if(board[xy[0]][xy[1]] == -1){
+						queue.add(new State2(xy[0], xy[1], newValue, steps + 1));
+					}else{
+						int destination = board[xy[0]][xy[1]];
+						xy = map.get(destination);
+						queue.add(new State2(xy[0], xy[1], destination, steps + 1));
+					}
+				}
+			}
+		}
+		return -1;
+	}
+
+	boolean valid2(int value, int [][] board, Map<Integer,Integer[]> map){
+		Integer[] xy = map.get(value);
+		if(xy == null){
+			return false;
+		}
+		if(xy[0] >= 0 && xy[0] < board.length && xy[1] >= 0 && xy[1] < board[0].length){
+			return true;
+		}
+		return false;
+	}
+
+	class Mutation{
+		String gene;
+		int steps;
+
+		Mutation(String gene, int steps){
+			this.gene = gene;
+			this.steps = steps;
+		}
+	}
+
+	public int minMutation(String startGene, String endGene, String[] bank) {
+		Queue<Mutation> queue = new LinkedList<>();
+		Set<String> valid = new HashSet<>();
+		for(int i = 0; i < bank.length; ++i){
+			valid.add(bank[i]);
+		}
+
+		queue.add(new Mutation(startGene, 0));
+		Set<String> seen = new HashSet<>();
+		seen.add(startGene);
+
+		while(!queue.isEmpty()){
+			Mutation mutation = queue.remove();
+			String gene = mutation.gene;
+			int steps = mutation.steps;
+			if(mutation.gene.equals(endGene)){
+				return steps;
+			}
+
+			for(String geneMutation: getMutations(gene)){
+				if(valid.contains(geneMutation) && !seen.contains(geneMutation)){
+					seen.add(geneMutation);
+					queue.add(new Mutation(geneMutation, steps + 1));
+				}
+			}
+		}
+		return -1;
+	}
+
+	List<String> getMutations(String gene){
+		char [] chars = new char[]{'A', 'C', 'G', 'T'};
+		List<String> mutations = new ArrayList<>();
+		for(int i = 0; i < gene.length(); ++i){
+			for(int j = 0; j < 4; ++j){
+				if(gene.charAt(i) != chars[j]){
+					if(i == 0){
+						mutations.add(chars[j] + gene.substring(i + 1));
+					}else if (i == gene.length() - 1){
+						mutations.add(gene.substring(0, gene.length() - 1) + chars[j]);
+					}else{
+						mutations.add(gene.substring(0, i) + chars[j] + gene.substring(i + 1));
+					}
+				}
+			}
+		}
+		return mutations;
+	}
+
+
+	public boolean canReach(int[] arr, int start) {
+		boolean [] seen = new boolean[arr.length];
+		return dfsCanReach(start, arr, seen);
+	}
+
+	boolean dfsCanReach(int start, int [] arr, boolean [] seen){
+		if(seen[start]){
+			return false;
+		}
+		if(arr[start] == 0){
+			return true;
+		}
+		seen[start] = true;
+		boolean canReachFirst = false, canReachSecond = false;
+		if(validCanReach(start + arr[start], arr)){
+			canReachFirst = dfsCanReach(start + arr[start], arr, seen);
+		}
+		if(canReachFirst){
+			return canReachFirst;
+		}
+		if(validCanReach(start - arr[start], arr)){
+			canReachSecond = dfsCanReach(start - arr[start], arr, seen);
+		}
+		return canReachSecond;
+	}
+
+	boolean validCanReach(int start, int [] arr){
+		return start >= 0 && start < arr.length;
+	}
+
+	public int maximumDetonation(int[][] bombs) {
+		int ans = 1;
+		for(int i = 0; i < bombs.length; ++i){
+			ans = Math.max(ans, dfsBombs(i, bombs, new boolean[bombs.length]));
+		}
+		return ans;
+	}
+
+	int dfsBombs(int i, int[][] bombs, boolean[] seen){
+		if(seen[i]){
+			return -1;
+		}
+		seen[i] = true;
+		int ans = 1;
+		for (int j = 0; j < bombs.length; ++j){
+			if(i != j && inRange(i, j, bombs) && !seen[j]){
+				ans += dfsBombs(j, bombs, seen);
+			}
+		}
+		return ans;
+	}
+
+	boolean inRange(int i, int j, int[][] bombs){
+		int jx = bombs[j][0], jy = bombs[j][1];
+		int x = bombs[i][0], y = bombs[i][1], r = bombs[i][2];
+		double d = Math.sqrt(Math.pow(jx - x, 2) + Math.pow(jy - y, 2));
+		return d <= r;
+	}
+
+	class State3{
+		String word;
+		int steps;
+		State3(String word, int steps){
+			this.word = word;
+			this.steps = steps;
+		}
+	}
+
+	public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+		Map<String,List<String>> graph = new HashMap<>();
+		graph.put(beginWord, getAdjacent(beginWord, wordList));
+		for(int i = 0; i < wordList.size(); ++i){
+			String word = wordList.get(i);
+			graph.put(word, getAdjacent(word, wordList));
+		}
+		Queue<State3> queue = new LinkedList<>();
+		queue.add(new State3(beginWord, 1));
+		Set<String> seen = new HashSet<>();
+		seen.add(beginWord);
+		while(!queue.isEmpty()){
+			State3 state = queue.remove();
+			String word = state.word;
+			int steps = state.steps;
+			if (word.equals(endWord)){
+				return steps;
+			}
+			for(String adjacent : graph.getOrDefault(word, List.of())){
+				if(!seen.contains(adjacent)){
+					seen.add(adjacent);
+					queue.add(new State3(adjacent, steps + 1));
+				}
+			}
+		}
+		return 0;
+	}
+
+	List<String> getAdjacent(String word, List<String> compareWords){
+		List<String> adj = new ArrayList<>();
+		char [] wordArray = word.toCharArray();
+		for(int i = 0; i < compareWords.size(); ++i){
+			String compare = compareWords.get(i);
+			int diff = 0;
+			for(int j = 0; j < wordArray.length; ++j){
+				if(wordArray[j] != compare.charAt(j)){
+					++diff;
+				}
+			}
+			if(diff == 1){
+				adj.add(compare);
+			}
+		}
+		return adj;
+	}
+
+	public int minStoneSum(int[] piles, int k) {
+		Queue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+		for(int i = 0; i < piles.length; ++i){
+			maxHeap.add(piles[i]);
+		}
+
+		for(int i = 0; i < k; ++i){
+			int max = maxHeap.remove();
+			maxHeap.add(max - (max / 2));
+		}
+
+		int ans = 0;
+		while(!maxHeap.isEmpty()){
+			ans += maxHeap.remove();
+		}
+		return ans;
+	}
+
+	public int connectSticks(int[] sticks) {
+		Queue<Integer> queue = new PriorityQueue<>();
+		for(int i = 0; i < sticks.length; ++i){
+			queue.add(sticks[i]);
+		}
+		int minCost = 0;
+		while(queue.size() > 1){
+			int cost1 = queue.remove();
+			int cost2 = queue.remove();
+			queue.add((cost1 + cost2));
+			minCost += (cost1 + cost2);
+		}
+		return minCost;
+	}
+
+
 }
 
 class TreeNode {
