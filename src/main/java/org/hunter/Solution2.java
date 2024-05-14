@@ -708,6 +708,60 @@ public class Solution2{
 			}
 		}
 	}
+
+	public int maxAreaOfIsland(int[][] grid) {
+		int ans = 0;
+		for(int i = 0; i < grid.length; ++i){
+			for(int j = 0; j < grid[i].length; ++j){
+				ans = Math.max(ans, dfsIsland(i, j, grid, new boolean[grid.length][grid[i].length], 0));
+			}
+		}
+		return ans;
+	}
+
+	int dfsIsland(int i, int j, int[][] grid, boolean[][] seen, int ans){
+		if (i < 0 || j < 0 || i >= grid.length || j >= grid[i].length || seen[i][j] || grid[i][j] == 0){
+			return ans;
+		}
+		seen[i][j] = true;
+		return 1 + dfsIsland(i + 1, j, grid, seen, ans) +
+				dfsIsland(i, j - 1, grid, seen, ans) +
+				dfsIsland(i, j + 1, grid, seen, ans) +
+				dfsIsland(i - 1, j, grid, seen, ans);
+	}
+
+	public int reachableNodes(int n, int[][] edges, int[] restricted) {
+		Map<Integer,List<Integer>> graph = new HashMap<>();
+		for (int i = 0; i < n; ++i){
+			graph.put(i, new ArrayList<>());
+		}
+		for(int i = 0; i < edges.length; ++i){
+			int x = edges[i][0], y = edges[i][1];
+			graph.get(x).add(y);
+			graph.get(y).add(x);
+		}
+		Set<Integer> restrictedSet = new HashSet<>();
+		for(int i = 0; i < restricted.length; ++i){
+			restrictedSet.add(restricted[i]);
+		}
+		return dfsReachable(0, graph, restrictedSet, new HashSet<>());
+	}
+
+	int dfsReachable(int x, Map<Integer,List<Integer>> graph, Set<Integer> restrictedSet,
+			Set<Integer> seen){
+		if(seen.contains(x)){
+			return 0;
+		}
+		seen.add(x);
+		if(restrictedSet.contains(x)){
+			return 0;
+		}
+		int ans = 1;
+		for(int y: graph.get(x)){
+			ans += dfsReachable(y, graph, restrictedSet, seen);
+		}
+		return ans;
+	}
 }
 
 class TreeNode {
