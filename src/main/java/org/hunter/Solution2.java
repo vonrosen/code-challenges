@@ -1094,6 +1094,86 @@ public class Solution2{
 		return minCost;
 	}
 
+	//[3,2,3,1,2,4,5,5,6]
+	//1,2,3,4,5,6
+	//1,2,2,3,3,4,5,5,6
+	//4
+	public int findKthLargest(int[] nums, int k) {
+		Queue<Integer> queue = new PriorityQueue<>();
+		for(int n : nums){
+			queue.add(n);
+			if(queue.size() > k){
+				queue.remove();
+			}
+		}
+		return queue.remove();
+	}
+
+	public int[][] kClosest(int[][] points, int k) {
+		Queue<Integer[]> queue = new PriorityQueue<>((Integer [] p1, Integer[] p2) -> {
+			int x1 = p1[0], y1 = p1[1], x2 = p2[0], y2 = p2[1];
+
+			int distance1 = (x1 * x1) + (y1 * y1);
+			int distance2 = (x2 * x2) + (y2 * y2);
+
+			return (distance2 - distance1);
+		});
+		for(int i = 0; i < points.length; ++i){
+			queue.add(new Integer[]{ points[i][0], points[i][1] });
+			if(queue.size() > k){
+				queue.remove();
+			}
+		}
+		int [][] ans = new int[k][2];
+		for (int i = 0; i < k; ++i){
+			Integer[] point = queue.remove();
+			ans[i][0] = point[0];
+			ans[i][1] = point[1];
+		}
+		return ans;
+	}
+
+	class KthLargest {
+
+		Queue<Integer> queue;
+		int k;
+
+		public KthLargest(int k, int[] nums) {
+			queue = new PriorityQueue<>();
+			for(int i = 0; i < nums.length; ++i){
+				queue.add(nums[i]);
+				if(queue.size() > k){
+					queue.remove();
+				}
+			}
+			this.k = k;
+		}
+
+		public int add(int val) {
+			queue.add(val);
+			if(queue.size() > k){
+				queue.remove();
+			}
+
+			return queue.peek();
+		}
+	}
+
+	public int maximum69Number (int num) {
+		String number = String.valueOf(num);
+		StringBuilder max = new StringBuilder();
+
+		boolean changed = false;
+		for(char c : number.toCharArray()){
+			if (c == '6' && !changed){
+				max.append("9");
+				changed = true;
+			}else{
+				max.append(c);
+			}
+		}
+		return Integer.valueOf(max.toString());
+	}
 
 }
 
