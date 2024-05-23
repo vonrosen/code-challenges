@@ -3,6 +3,7 @@ package org.hunter;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -20,9 +21,9 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		String begin = "hit";
-		String end = "cog";
-		System.out.println(solution2.ladderLength(begin, end, List.of("hot","dot","dog","lot","log","cog")));
+		int [] nums = new int[]{7,2,5,10,8};
+		int k = 2;
+		System.out.println(solution2.splitArray(nums, k));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -1173,6 +1174,230 @@ public class Solution2{
 			}
 		}
 		return Integer.valueOf(max.toString());
+	}
+
+	public int maximumUnits(int[][] boxTypes, int truckSize) {
+		Queue<Integer[]> queue = new PriorityQueue<>((Integer [] b1, Integer [] b2) -> {
+			return b2[1] - b1[1];
+		});
+
+		for(int i = 0; i < boxTypes.length; ++i){
+			queue.add(new Integer[]{  boxTypes[i][0], boxTypes[i][1] });
+		}
+
+		int ans = 0;
+		while(truckSize > 0 && !queue.isEmpty()){
+			Integer [] b = queue.remove();
+			if(b[0] <= truckSize){
+				truckSize -= b[0];
+				ans += b[0] * b[1];
+			}else{
+				ans += truckSize * b[1];
+				truckSize = 0;
+			}
+		}
+		return ans;
+	}
+
+	public int maxNumberOfApples(int[] weight) {
+		int wt = 5000;
+		Arrays.sort(weight);
+		int ans = 0;
+		for(int i = 0; i < weight.length; ++i){
+			if(wt >= weight[i]){
+				wt -= weight[i];
+				ans++;
+			}else{
+				break;
+			}
+		}
+		return ans;
+	}
+
+	public int minSetSize(int[] arr) {
+		Map<Integer,Integer> counts = new HashMap<>();
+		List<Integer> ordered = new ArrayList<>();
+		for(int i = 0; i < arr.length; ++i){
+			counts.put(arr[i], counts.getOrDefault(arr[i], 0) + 1);
+		}
+		for(Integer count : counts.values()){
+			ordered.add(count);
+		}
+		Collections.sort(ordered);
+		int ans = 0;
+		int removals = 0;
+		while (removals < (arr.length / 2)){
+			removals += ordered.get(ordered.size() - 1);
+			ordered.remove(ordered.size() - 1);
+			ans++;
+		}
+		return ans;
+	}
+
+	public int searchInsert(int[] nums, int target) {
+		int left = 0;
+		int right = nums.length - 1;
+
+		while (left <= right){
+			int mid = left + (right - left) / 2;
+
+			if (target == nums[mid]){
+				return mid;
+			}
+
+			if (target > nums[mid]){
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+		return left;
+	}
+
+	public int[] answerQueries(int[] nums, int[] queries) {
+		Arrays.sort(nums);
+		int [] sums = new int[nums.length];
+		sums[0] = nums[0];
+		for(int i = 1; i < sums.length; ++i){
+			sums[i] = nums[i] + sums[i - 1];
+		}
+
+		int [] ans = new int[queries.length];
+		for(int i = 0; i < queries.length; ++i){
+			ans[i] = binSearch(sums, queries[i]);
+		}
+		return ans;
+	}
+
+	int binSearch(int [] nums, int target){
+		int left = 0;
+		int right = nums.length - 1;
+
+		while (left <= right){
+			int mid = left + (right - left) / 2;
+
+			if(nums[mid] == target){
+				return mid + 1;
+			}
+			if(target < nums[mid]){
+				right = mid - 1;
+			}else{
+				left = mid + 1;
+			}
+		}
+		return left;
+	}
+
+	public int smallestDivisor(int[] nums, int threshold) {
+		int left = 1;
+		int right = 0;
+		for(int i = 0; i < nums.length; ++i){
+			right = Math.max(right, nums[i]);
+		}
+
+		while(left <= right){
+			int mid = left + (right - left) / 2;
+			if(check(nums, mid, threshold)){
+				right = mid - 1;
+			}else{
+				left = mid + 1;
+			}
+		}
+		return left;
+	}
+
+	boolean check(int [] nums, int divisor, int threshold){
+		int sum = 0;
+		for(int i = 0; i < nums.length; ++i){
+			sum += (int)Math.ceil((double)nums[i] / (double)divisor);
+		}
+		return sum <= threshold;
+	}
+
+	public int maximizeSweetness(int[] sweetness, int k) {
+		int left = Integer.MAX_VALUE;
+		int right = 1;
+		for(int i = 0; i < sweetness.length; ++i){
+			left = Math.min(left, sweetness[i]);
+			right += sweetness[i];
+		}
+		while(left <= right){
+			int	mid = left + (right - left) / 2;
+			if (check2(mid, sweetness, k)){
+				left = mid + 1;
+			}else{
+				right = mid - 1;
+			}
+		}
+		return right;
+	}
+
+	boolean check2(int target, int [] sweetness, int k){
+		int cuts = 0;
+		int left = 0;
+		int sum = 0;
+		while(left < sweetness.length){
+			sum += sweetness[left];
+			if(sum >= target){
+				cuts++;
+				sum = 0;
+			}
+			left++;
+		}
+		return cuts >= k + 1;
+	}
+
+	public int splitArray(int[] nums, int k) {
+		int left = 0;
+		int right = 1;
+		for(int i = 0; i < nums.length; ++i){
+			left = Math.max(left, nums[i]);
+			right += nums[i];
+		}
+		while(left <= right){
+			int mid = left + (right - left) / 2;
+			if (check3(mid, nums, k)){
+				right = mid - 1;
+			}else{
+				left = mid + 1;
+			}
+		}
+		return left;
+	}
+
+	boolean check3(int largestSum, int []  nums, int k){
+		int left = 0;
+		int sum = 0;
+		int splits = 0;
+		while (left < nums.length){
+			sum += nums[left];
+			if (sum > largestSum){
+				++splits;
+				sum = nums[left];
+			}
+			++left;
+		}
+		return splits + 1 <= k;
+	}
+
+	public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+		List<List<Integer>> ans = new ArrayList<>();
+		List<Integer> path = new ArrayList<>();
+		path.add(0);
+		dfsTarget(0, graph, ans, path);
+		return ans;
+	}
+
+	void dfsTarget(int x, int [][] graph, List<List<Integer>> ans, List<Integer> path){
+		if(x == graph.length - 1){
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+		for(int node: graph[x]){
+			path.add(node);
+			dfsTarget(node, graph, ans, path);
+			path.remove(path.size() - 1);
+		}
 	}
 
 }
