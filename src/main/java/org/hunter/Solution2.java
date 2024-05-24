@@ -1400,6 +1400,115 @@ public class Solution2{
 		}
 	}
 
+	public List<String> letterCombinations(String digits) {
+		if(digits.isEmpty()){
+			return List.of();
+		}
+		Map<Character,String> map = Map.of('2', "abc",
+				'3', "def",
+				'4', "ghi",
+				'5', "jkl",
+				'6', "mno",
+				'7', "pqrs",
+				'8', "tuv",
+				'9', "wxyz");
+		List<String> ans = new ArrayList<>();
+		StringBuilder current = new StringBuilder();
+		permute(0, digits, map, current, ans);
+		return ans;
+	}
+
+	void permute(int index, String digits, Map<Character,String> map, StringBuilder current, List<String> ans){
+		if(current.length() == digits.length()){
+			ans.add(current.toString());
+			return;
+		}
+		for(Character character : map.get(digits.charAt(index)).toCharArray()){
+			current.append(character);
+			permute(index + 1, digits, map, current, ans);
+			current.deleteCharAt(current.length() - 1);
+		}
+	}
+
+	public List<String> generateParenthesis(int n) {
+		StringBuilder curr = new StringBuilder("(");
+		List<String> ans = new ArrayList<>();
+		int openCount = 1;
+		backtrack(n, 0, curr, openCount, ans);
+		return ans;
+	}
+
+	void backtrack(int n, int count, StringBuilder curr, int openCount, List<String> ans){
+		if(count == n){
+			ans.add(curr.toString());
+			return;
+		}
+		if(curr.length() == (n * 2)){
+			return;
+		}
+		for(char c : "()".toCharArray()){
+			if(c == ')' && openCount > 0){
+				++count;
+			}
+			curr.append(c);
+			backtrack(n, count, curr, c == '(' ? openCount + 1: openCount - 1, ans);
+			curr.deleteCharAt(curr.length() - 1);
+		}
+	}
+
+	public int[] numsSameConsecDiff(int n, int k) {
+		List<String> ans = new ArrayList<>();
+		for(int i = 1; i < 10; ++i){
+			StringBuilder curr = new StringBuilder();
+			curr.append(i);
+			backtrack2(n, k, curr, ans);
+		}
+		int [] arr = new int[ans.size()];
+		for(int i = 0; i < ans.size(); ++i){
+			arr[i] = Integer.parseInt(ans.get(i));
+		}
+		return arr;
+	}
+
+	void backtrack2(int n, int k, StringBuilder curr, List<String> ans){
+		if(curr.length() == n){
+			ans.add(curr.toString());
+			return;
+		}
+		for(int i = 0; i < 10; ++i){
+			if(Math.abs(Integer.parseInt(String.valueOf(curr.charAt(curr.length() - 1))) - i) == k){
+				curr.append(i);
+				backtrack2(n, k, curr, ans);
+				curr.deleteCharAt(curr.length() - 1);
+			}
+		}
+	}
+
+	public List<List<Integer>> combinationSum3(int k, int n) {
+		List<List<Integer>> ans = new ArrayList<>();
+		for(int i = 1; i < 10; ++i){
+			List<Integer> curr = new ArrayList<>();
+			curr.add(i);
+			backtrack3(k, n, i, i, curr, ans);
+		}
+		return ans;
+	}
+
+	void backtrack3(int k, int n, int index, int sum, List<Integer> curr, List<List<Integer>> ans){
+		if(sum == n && curr.size() == k){
+			ans.add(new ArrayList<>(curr));
+			return;
+		}
+		if(sum > n || curr.size() > k){
+			return;
+		}
+		for(int i = index + 1; i < 10; ++i){
+			curr.add(i);
+			backtrack3(k, n, i, sum + i, curr, ans);
+			curr.remove(curr.size() - 1);
+		}
+	}
+
 }
 
 class TreeNode {
