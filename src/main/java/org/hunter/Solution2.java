@@ -1509,6 +1509,160 @@ public class Solution2{
 		}
 	}
 
+	Map<Integer,Integer> mem = new HashMap<>();
+
+	public int climbStairs(int n) {
+		if (n == 1){
+			return 1;
+		}
+
+		if (n == 2){
+			return 2;
+		}
+
+		if(mem.containsKey(n)){
+			return mem.get(n);
+		}
+
+		mem.put(n, climbStairs(n - 1) + climbStairs(n - 2));
+		return mem.get(n);
+	}
+
+	public int minCostClimbingStairs(int[] cost) {
+		return dp(cost.length, cost);
+	}
+
+	int dp(int i, int[] cost){
+		if(i == 1){
+			return 0;
+		}
+		if(i == 2){
+			return Math.min(cost[i - 1], cost[i - 2]);
+		}
+		if(mem.containsKey(i)){
+			return mem.get(i);
+		}
+		mem.put(i, Math.min(cost[i - 1] + dp(i - 1, cost), cost[i - 2] + dp(i - 2, cost)));
+		return mem.get(i);
+	}
+
+	public int coinChange(int[] coins, int amount){
+		if(amount < 0){
+			return -1;
+		}
+
+		if(amount == 0){
+			return 0;
+		}
+
+		if(amount == 1){
+			for(int i = 0; i < coins.length; ++i){
+				if(amount == coins[i]){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		}
+
+		if(mem.containsKey(amount)){
+			return mem.get(amount);
+		}
+
+		int numberCoins = Integer.MAX_VALUE;
+		boolean notFound = true;
+		for(int i = 0; i < coins.length; ++i){
+			int tmp = coinChange(coins, amount - coins[i]);
+			if (tmp != -1){
+				notFound = false;
+				numberCoins = Math.min(numberCoins, 1 + tmp);
+			}
+		}
+
+		if(notFound){
+			mem.put(amount, -1);
+			return -1;
+		}
+
+		mem.put(amount, numberCoins);
+		return numberCoins;
+	}
+
+	public int maxProfit(int[] prices, int fee) {
+		int [][] mem = new int[prices.length][2];
+		for(int i = 0; i < prices.length; ++i){
+			Arrays.fill(mem[i], -1);
+		}
+		return dp3(0, fee, false, prices, mem);
+	}
+
+	int dp3(int i, int fee, boolean holding, int [] prices, int [][] mem){
+		if(i == prices.length - 1){
+			if(holding){
+				if(prices[i] > fee){
+					return prices[i] - fee;
+				}else{
+					return 0;
+				}
+			}else{
+				return 0;
+			}
+		}
+
+		if(mem[i][holding ? 1 : 0] != -1){
+			return mem[i][holding ? 1 : 0];
+		}
+
+		//skip doing anything (buying or selling)
+		int ans = dp3(i + 1, fee, holding, prices, mem);
+		if(holding){
+			ans = Math.max(ans, prices[i] - fee + dp3(i + 1, fee, false, prices, mem));
+		}else{
+			ans = Math.max(ans, -prices[i] + dp3(i + 1, fee, true, prices, mem));
+		}
+
+		mem[i][holding ? 1 : 0] = ans;
+		return ans;
+	}
+
+
+	public int maxProfit(int[] prices) {
+		int[][][] mem = new int[prices.length][2][2];
+		for(int i = 0; i < prices.length; ++i){
+			for(int j = 0; j < 2; ++j){
+				Arrays.fill(mem[i][j], -1);
+			}
+		}
+		return dp4(prices, 0, false, false, mem);
+	}
+
+	int dp4(int [] prices, int i, boolean holding, boolean coolDown, int[][][] mem){
+		if(i == prices.length - 1){
+			if(holding){
+				return prices[i];
+			}else{
+				return 0;
+			}
+		}
+		if(mem[i][holding ? 1: 0][coolDown ? 1: 0] != -1){
+			return mem[i][holding ? 1: 0][coolDown ? 1: 0];
+		}
+		int ans;
+		if(holding){
+			ans = Math.max(prices[i] + dp4(prices,i + 1, false, true, mem),
+					dp4(prices,i + 1, true, false, mem));
+		}else{
+			if(coolDown){
+				ans = dp4(prices, i + 1, false, false, mem);
+			}else{
+				ans = Math.max(-prices[i] + dp4(prices, i + 1, true, false, mem),
+						dp4(prices, i + 1, false, false, mem));
+			}
+		}
+		mem[i][holding ? 1: 0][coolDown ? 1: 0] = ans;
+		return ans;
+	}
+
 }
 
 class TreeNode {
