@@ -21,9 +21,8 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		int [] nums = new int[]{7,2,5,10,8};
-		int k = 2;
-		System.out.println(solution2.splitArray(nums, k));
+		int [][] matrix = new int[][]{{2,1,3},{6,5,4},{7,8,9}};
+		System.out.println(solution2.minFallingPathSum(matrix));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -1661,6 +1660,89 @@ public class Solution2{
 		}
 		mem[i][holding ? 1: 0][coolDown ? 1: 0] = ans;
 		return ans;
+	}
+
+	public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+		int[][] mem = new int[obstacleGrid.length][obstacleGrid[0].length];
+		for(int i = 0; i < mem.length; ++i){
+			Arrays.fill(mem[i], -1);
+		}
+		return dp5(obstacleGrid, obstacleGrid.length - 1, obstacleGrid[0].length - 1, mem);
+	}
+
+	int dp5(int [][] grid, int row, int col, int[][] mem){
+		if(grid[row][col] == 1){
+			return 0;
+		}
+		if(row == 0 && col == 0){
+			return 1;
+		}
+
+		if(mem[row][col] != -1){
+			return mem[row][col];
+		}
+
+		int paths = 0;
+		if(row > 0){
+			if(grid[row - 1][col] != 1){
+				paths += dp5(grid, row - 1, col, mem);
+			}
+		}
+
+		if(col > 0){
+			if(grid[row][col - 1] != 1){
+				paths += dp5(grid, row, col - 1, mem);
+			}
+		}
+
+		mem[row][col] = paths;
+		return mem[row][col];
+	}
+
+	public int minFallingPathSum(int[][] matrix) {
+
+		int ans = Integer.MAX_VALUE;
+		for (int i = 0; i < matrix.length; ++i){
+			Map<String,Integer> mem = new HashMap<>();
+			ans = Math.min(ans, dp6(matrix, 0, i, mem));
+		}
+		return ans;
+	}
+
+	int dp6(int[][] matrix, int row, int col, Map<String,Integer> mem){
+		if(!valid(matrix, row, col)){
+			return Integer.MAX_VALUE;
+		}
+
+		if(row == matrix.length - 1){
+			return matrix[row][col];
+		}
+
+		if(mem.containsKey(row + "-" + col)){
+			return mem.get(row + "-" + col);
+		}
+
+		int ans = Integer.MAX_VALUE;
+		ans = Math.min(ans, dp6(matrix, row + 1, col - 1, mem));
+		ans = Math.min(ans, dp6(matrix, row + 1, col, mem));
+		ans = Math.min(ans, dp6(matrix, row + 1, col + 1, mem));
+
+		if(ans != Integer.MAX_VALUE){
+			ans += matrix[row][col];
+		}
+
+		mem.put(row + "-" + col, ans);
+		return ans;
+	}
+
+	boolean valid(int [][] matrix, int row, int col){
+		if(row > matrix.length - 1 || row < 0){
+			return false;
+		}
+		if(col > matrix.length - 1 || col < 0){
+			return false;
+		}
+		return true;
 	}
 
 }
