@@ -21,8 +21,8 @@ public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-		int [][] matrix = new int[][]{{2,1,3},{6,5,4},{7,8,9}};
-		System.out.println(solution2.minFallingPathSum(matrix));
+
+		System.out.println(solution2.sortedSquares(new int[]{-10000,-9999,-7,-5,0,0,10000}));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -1743,6 +1743,26 @@ public class Solution2{
 			return false;
 		}
 		return true;
+	}
+
+	public int[] sortedSquares(int[] nums) {
+		int [] tmp = new int[nums.length];
+		int left = 0;
+		int right = nums.length - 1;
+
+		for(int i = tmp.length - 1; i >= 0; --i){
+			int square;
+			if (Math.abs(nums[left]) < Math.abs(nums[right])){
+				square = nums[right] * nums[right];
+				--right;
+			}else{
+				square = nums[left] * nums[left];
+				++left;
+			}
+
+			tmp[i] = square;
+		}
+		return tmp;
 	}
 
 }
