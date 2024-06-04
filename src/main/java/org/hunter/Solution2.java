@@ -268,19 +268,16 @@ public class Solution2{
 		return ans;
 	}
 
-	public ListNode reverse(ListNode head) {
-		ListNode tmp = head;
+	public ListNode reverse2(ListNode node){
+		ListNode head = node;
 		ListNode prev = null;
-		while (tmp != null) {
-			ListNode next = tmp.next;
-			tmp.next = prev;
-			if (next == null) {
-				break;
-			}
-			prev = tmp;
-			tmp = next;
+		while(head != null){
+			ListNode next = head.next;
+			head.next = prev;
+			prev = head;
+			head = next;
 		}
-		return tmp;
+		return head;
 	}
 
 	public ListNode reverseList(ListNode head) {
@@ -1508,6 +1505,8 @@ public class Solution2{
 			curr.remove(curr.size() - 1);
 		}
 	}
+
+
 
 }
 
