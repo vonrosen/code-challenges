@@ -1778,6 +1778,26 @@ class TreeNode {
 	}
 }
 
+class NumArray {
+
+	int [] sums;
+
+	public NumArray(int[] nums) {
+		this.sums = new int[nums.length];
+		this.sums[0] = nums[0];
+		for(int i = 1; i < nums.length; ++i){
+			this.sums[i] = sums[i - 1] + nums[i];
+		}
+	}
+
+	public int sumRange(int left, int right) {
+		if(left == 0){
+			return sums[right];
+		}
+		return sums[right] - sums[left - 1];
+	}
+}
+
 class MovingAverage {
 
 	Queue<Integer> queue;
