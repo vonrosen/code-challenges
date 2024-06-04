@@ -1765,6 +1765,22 @@ public class Solution2{
 		return tmp;
 	}
 
+	//O(2 * N) = O(N), O(N)
+	public String reversePrefix(String word, char ch) {
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0; i < word.length(); ++i){
+			if(word.charAt(i) == ch){
+				stringBuilder.append(word.charAt(i));
+				if(i == word.length() - 1){
+					return stringBuilder.reverse().toString();
+				}
+				return stringBuilder.reverse() + word.substring(i + 1);
+			}
+			stringBuilder.append(word.charAt(i));
+		}
+		return word;
+	}
+
 }
 
 class TreeNode {
