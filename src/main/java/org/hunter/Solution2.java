@@ -16,13 +16,23 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 
 public class Solution2{
 
 	public static void main(String [] args) {
 		Solution2 solution2 = new Solution2();
-
-		System.out.println(solution2.sortedSquares(new int[]{-10000,-9999,-7,-5,0,0,10000}));
+		ListNode head = new ListNode();
+		head.val = 100;
+		head.next = new ListNode();
+		head.next.val = 90;
+//		head.next.next = new ListNode();
+//		head.next.next.val = 3;
+//		head.next.next.next = new ListNode();
+//		head.next.next.next.val = 4;
+//		head.next.next.next.next = new ListNode();
+//		head.next.next.next.next.val = 5;
+		System.out.println(solution2.predictPartyVictory("RRDDD"));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -1745,6 +1755,106 @@ public class Solution2{
 		return true;
 	}
 
+	public boolean containsDuplicate(int[] nums) {
+		Map<Integer,Integer> map = new HashMap<>();
+		for(int i = 0; i < nums.length; ++i){
+			map.putIfAbsent(nums[i], 0);
+			map.put(nums[i], map.get(nums[i]) + 1);
+			if(map.get(nums[i]) >= 2){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//O((N*log(N)) + N*(N*log(N)) = N*(N*log(N))
+	public boolean checkInclusion(String s1, String s2) {
+		if(s1.length() > s2.length()){
+			return false;
+		}
+		char [] arr = s1.toCharArray();
+		Arrays.sort(arr);
+		String sortedS1 = new String(arr);
+
+		for(int i = 0; i <= s2.length() - s1.length(); ++i){
+			String sub = s2.substring(i, i + s1.length());
+			char [] arrS2 = sub.toCharArray();
+			Arrays.sort(arrS2);
+			String sortedSub = new String(arrS2);
+			if(sortedSub.equals(sortedS1)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean checkInclusion2(String s1, String s2) {
+		Set<String> perms = new HashSet<>();
+		perms(s1, 0, new HashSet<>(), new StringBuilder(), perms);
+		for(String perm: perms){
+			if(s2.contains(perm)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean closeStrings(String word1, String word2) {
+		Map<Character,Integer> map1 = new HashMap<>();
+		Map<Character,Integer> map2 = new HashMap<>();
+		for(Character character : word1.toCharArray()){
+			map1.putIfAbsent(character, 0);
+			map1.put(character, map1.get(character) + 1);
+		}
+
+		for(Character character : word2.toCharArray()){
+			map2.putIfAbsent(character, 0);
+			map2.put(character, map2.get(character) + 1);
+		}
+
+		for(Character character1 : map1.keySet()){
+			if(map2.get(character1) == null){
+				return false;
+			}
+		}
+
+		List<Integer> counts1 = new ArrayList<>(map1.values());
+		Collections.sort(counts1);
+
+		List<Integer> counts2 = new ArrayList<>(map2.values());
+		Collections.sort(counts2);
+
+		for(int i = 0; i < counts1.size(); ++i){
+			if(!counts1.get(i).equals(counts2.get(i))){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	void perms(String s, int index, Set<Integer> seen, StringBuilder sb, Set<String> ans){
+		if(s.length() == sb.length()){
+			ans.add(sb.toString());
+			return;
+		}
+		if(index < 0){
+			return;
+		}
+		for(int i = 0; i < s.length(); ++i){
+			StringBuilder tmp = new StringBuilder(sb);
+			tmp.append(s.charAt(i));
+			if(!seen.contains(i)){
+				seen.add(i);
+				perms(s, i + 1, seen, tmp, ans);
+				perms(s, i - 1, seen, tmp, ans);
+				seen.remove(i);
+			}
+		}
+	}
+
+
+
 	public int[] sortedSquares(int[] nums) {
 		int [] tmp = new int[nums.length];
 		int left = 0;
@@ -1779,6 +1889,332 @@ public class Solution2{
 			stringBuilder.append(word.charAt(i));
 		}
 		return word;
+	}
+
+	public ListNode swapNodes(ListNode head, int k) {
+		ListNode next = head;
+		List<ListNode> list = new ArrayList<>();
+		while(next != null){
+			list.add(next);
+			next = next.next;
+		}
+
+		ListNode swap1 = list.get(k - 1);
+		ListNode swap2 = list.get(list.size() - k);
+
+		list.remove(k - 1);
+		list.add(k - 1, swap2);
+		list.remove(list.size() - k);
+		list.add(list.size() - k + 1, swap1);
+
+		ListNode newHead = new ListNode();
+		newHead.val = list.get(0).val;
+		if(list.size() > 1){
+			ListNode newHeadCopy = newHead;
+			list.remove(0);
+			for(ListNode node: list){
+				newHead.next = new ListNode();
+				newHead.next.val = node.val;
+				newHead = newHead.next;
+			}
+			return newHeadCopy;
+		}
+		return newHead;
+	}
+
+	public int pairSum2(ListNode head) {
+		List<Integer> first = new ArrayList<>();
+		int n = 0;
+		ListNode next = head;
+		while(next != null){
+			n++;
+			next = next.next;
+		}
+
+		int i = 0;
+		next = head;
+		while(next != null){
+			if (i <= (n / 2) - 1){
+				first.add(next.val);
+			}
+			else{
+				break;
+			}
+			++i;
+			next = next.next;
+		}
+
+		ListNode prev = null;
+		next = head;
+		while(next != null){
+			ListNode tmp = next.next;
+			next.next = prev;
+			prev = next;
+			next = tmp;
+		}
+
+		List<Integer> second = new ArrayList<>();
+		i = 0;
+		next = prev;
+		while (prev != null){
+			if (i <= (n / 2) - 1){
+				second.add(next.val);
+			}else{
+				break;
+			}
+			++i;
+			next = next.next;
+		}
+		int ans = Integer.MIN_VALUE;
+		i = 0;
+		for(Integer f : first){
+			ans = Math.max(ans, second.get(i) + f);
+			++i;
+		}
+		return ans;
+	}
+
+
+	public int[] asteroidCollision(int[] asteroids) {
+		Stack<Integer> stack = new Stack<>();
+		Stack<Integer> finalStack = new Stack<>();
+		for(int i = 0; i < asteroids.length; ++i){
+			stack.add(i);
+		}
+
+		while(true){
+			finalStack.push(stack.pop());
+			boolean complete = true;
+			while(!stack.isEmpty()){
+				int fromIndex = stack.pop();
+				if(finalStack.isEmpty()){
+					finalStack.push(fromIndex);
+					continue;
+				}
+				int finalIndex = finalStack.peek();
+				if(fromIndex < finalIndex && asteroids[fromIndex] >= 0 && asteroids[finalIndex] < 0
+						|| fromIndex > finalIndex && asteroids[fromIndex] < 0 && asteroids[finalIndex] >= 0){
+					if(Math.abs(asteroids[fromIndex]) > Math.abs(asteroids[finalIndex])){
+						finalStack.pop();
+						finalStack.push(fromIndex);
+						complete = false;
+					}else if (Math.abs(asteroids[fromIndex]) == Math.abs(asteroids[finalIndex])){
+						finalStack.pop();
+					}
+				}else{
+					finalStack.push(fromIndex);
+				}
+			}
+
+			if(complete){
+				break;
+			}
+			stack = new Stack<>();
+			for(int i = finalStack.size() - 1; i >= 0; --i){
+				stack.push(finalStack.get(i));
+			}
+			finalStack = new Stack<>();
+		}
+
+
+		int [] ans = new int[finalStack.size()];
+		int i = 0;
+		while(!finalStack.isEmpty()){
+			ans[i] = asteroids[finalStack.pop()];
+			++i;
+		}
+		return ans;
+	}
+
+
+	public String predictPartyVictory(String senate) {
+		Queue<Character> all = new LinkedList<>();
+		Queue<Character> d = new LinkedList<>();
+		Queue<Character> r = new LinkedList<>();
+
+		for(Character senator : senate.toCharArray()){
+			all.add(senator);
+			if(senator == 'R'){
+				r.add(senator);
+			}else{
+				d.add(senator);
+			}
+		}
+
+		while(true){
+			while(!all.isEmpty()){
+				Character senator = all.poll();
+				if(senator == 'R' && d.isEmpty()){
+					return "Radiant";
+				}
+				if(senator == 'D' && r.isEmpty()){
+					return "Dire";
+				}
+				if(senator == 'R'){
+					all.remove('D');
+					d.poll();
+				}else{
+					all.remove('R');
+					r.poll();
+				}
+				all.add(senator);
+			}
+		}
+	}
+
+	public long subArrayRanges(int[] nums) {
+		long ans = 0;
+		for(int i = 0; i < nums.length; ++i){
+			for(int j = i; j < nums.length; ++j){
+				int max = nums[i], min = nums[i];
+				for(int k = i; k <= j; ++k){
+					max = Math.max(max, nums[k]);
+					min = Math.min(min, nums[k]);
+				}
+				ans += max - min;
+			}
+		}
+		return ans;
+	}
+
+
+	public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+		List<List<Integer>> ans = new ArrayList<>();
+		if(root == null){
+			return ans;
+		}
+		dfsPathSum(root, 0, targetSum, new ArrayList<>(), ans);
+		return ans;
+	}
+
+	void dfsPathSum(TreeNode node, int currentSum, int targetSum, List<Integer> path, List<List<Integer>> ans){
+		if(node.left == null && node.right == null){
+			path.add(node.val);
+			if(node.val + currentSum == targetSum){
+				ans.add(new ArrayList<>(path));
+			}
+			return;
+		}
+		path.add(node.val);
+		if(node.left != null){
+			dfsPathSum(node.left, node.val + currentSum, targetSum, path, ans);
+			path.remove(path.size() - 1);
+		}
+		if(node.right != null){
+			dfsPathSum(node.right, node.val + currentSum, targetSum, path, ans);
+			path.remove(path.size() - 1);
+		}
+	}
+
+
+	public List<List<Integer>> levelOrder(TreeNode root) {
+		Queue<TreeNode> queue = new LinkedList<>();
+		List<List<Integer>> ans = new ArrayList<>();
+		if(root == null){
+			return ans;
+		}
+		List<Integer> first = new ArrayList<>();
+		first.add(root.val);
+		ans.add(first);
+		queue.add(root);
+		while(!queue.isEmpty()){
+			List<Integer> level = new ArrayList<>();
+			int size = queue.size();
+			for(int i = 0; i < size; ++i){
+				TreeNode node = queue.poll();
+				if(node.left != null){
+					level.add(node.left.val);
+					queue.add(node.left);
+				}
+				if(node.right != null){
+					level.add(node.right.val);
+					queue.add(node.right);
+				}
+			}
+			if(!level.isEmpty()){
+				ans.add(level);
+			}
+		}
+		return ans;
+	}
+
+	//O(n1 + n2) * O(log(n1 + n2), O(n1 + n2)
+	public List<Integer> getAllElements(TreeNode root1, TreeNode root2) {
+		List<Integer> ans = new ArrayList<>();
+		dfsAllElements(root1, ans);
+		dfsAllElements(root2, ans);
+		Collections.sort(ans);
+		return ans;
+	}
+
+	void dfsAllElements(TreeNode node, List<Integer> ans){
+		if(node == null){
+			return;
+		}
+
+		ans.add(node.val);
+		dfsAllElements(node.left, ans);
+		dfsAllElements(node.right, ans);
+	}
+
+	public int maximalNetworkRank(int n, int[][] roads) {
+		Map<Integer,List<Integer>> graph = new HashMap<>();
+		for(int[] road : roads){
+			graph.putIfAbsent(road[0], new ArrayList<>());
+			List<Integer> list = graph.get(road[0]);
+			list.add(road[1]);
+			graph.put(road[0], list);
+			graph.putIfAbsent(road[1], new ArrayList<>());
+			list = graph.get(road[1]);
+			list.add(road[0]);
+			graph.put(road[1], list);
+		}
+		if(graph.isEmpty()){
+			return 0;
+		}
+		int ans = 0;
+		for(int i = 0; i < n; ++i){
+			for(int j = i + 1; j < n; ++j){
+				ans = Math.max(ans, maximalNetworkRank(i, j, graph, new HashSet<>()));
+			}
+
+		}
+		return ans;
+	}
+
+	int maximalNetworkRank(int city1, int city2, Map<Integer,List<Integer>> graph, Set<String> seen){
+		int ans = 0;
+
+		if(graph.get(city1) != null){
+			for(Integer dest : graph.get(city1)){
+				String key;
+				if(dest >= city1){
+					key = city1 + "-" + dest;
+				}else{
+					key = dest + "-" + city1;
+				}
+				if(!seen.contains(key)){
+					seen.add(key);
+					ans += 1;
+				}
+			}
+		}
+		if(graph.get(city2) != null){
+			for(Integer dest : graph.get(city2)){
+				String key;
+				if(dest >= city2){
+					key = city2 + "-" + dest;
+				}else{
+					key = dest + "-" + city2;
+				}
+				if(!seen.contains(key)){
+					seen.add(key);
+					ans += 1;
+				}
+			}
+		}
+
+		return ans;
 	}
 
 }
