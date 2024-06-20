@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -32,7 +33,8 @@ public class Solution2{
 //		head.next.next.next.val = 4;
 //		head.next.next.next.next = new ListNode();
 //		head.next.next.next.next.val = 5;
-		System.out.println(solution2.predictPartyVictory("RRDDD"));
+
+		System.out.println(solution2.minDays(new int[]{7,7,7,7,12,7,7}, 2, 3));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -2212,6 +2214,249 @@ public class Solution2{
 			}
 		}
 
+		return ans;
+	}
+
+	//O(N * (N * 2 * (N * log(N))) * N^2)  ,  O(2 * N)
+	public List<String> topKFrequent2(String[] words, int k) {
+		Map<String,Integer> counts = new HashMap<>();
+		for(String word : words){
+			counts.putIfAbsent(word, 0);
+			counts.put(word, counts.get(word) + 1);
+		}
+		TreeMap<Integer,List<String>> sortedMap = new TreeMap<>(Comparator.reverseOrder());
+		for(String word: counts.keySet()){
+			int count = counts.get(word);
+			sortedMap.putIfAbsent(count, new ArrayList<>());
+			List<String> wordList = sortedMap.get(count);
+			wordList.add(word);
+			Collections.sort(wordList);
+			sortedMap.put(count, wordList);
+		}
+		List<String> ans = new ArrayList<>();
+		for(int count: sortedMap.keySet()){
+			ans.addAll(sortedMap.get(count));
+			if(ans.size() >= k){
+				while (ans.size() > k){
+					ans.remove(ans.size() - 1);
+				}
+				break;
+			}
+		}
+		return ans;
+	}
+
+	class WordCount{
+		int count;
+		String word;
+		WordCount(String word, int count){
+			this.word = word;
+			this.count = count;
+		}
+	}
+
+	//O(N * (k * log(k))), O(N)
+	public List<String> topKFrequent(String[] words, int k) {
+		Queue<WordCount> heap = new PriorityQueue<>((wc1, wc2) -> {
+			if(wc1.count < wc2.count){
+				return -1;
+			}
+			if(wc1.count > wc2.count){
+				return 1;
+			}
+			return wc2.word.compareTo(wc1.word);
+		});
+		Map<String,WordCount> counts = new HashMap<>();
+		for(String word : words){
+			counts.putIfAbsent(word, new WordCount(word, 0));
+			WordCount wc = counts.get(word);
+			wc.count++;
+			counts.put(word, wc);
+		}
+
+		for(WordCount wc: counts.values()){
+			if(heap.size() < k){
+				heap.add(wc);
+			}else if(heap.size() == k){
+				WordCount removed = heap.remove();
+				if(removed.count > wc.count){
+					heap.add(removed);
+				}else if(removed.count < wc.count){
+					heap.add(wc);
+				}else{
+					if(removed.word.compareTo(wc.word) < 0){
+						heap.add(removed);
+					}else{
+						heap.add(wc);
+					}
+				}
+			}
+		}
+		List<String> tmp = new ArrayList<>();
+		while(!heap.isEmpty()){
+			tmp.add(heap.remove().word);
+		}
+		List<String> ans = new ArrayList<>();
+		for(int i = tmp.size() - 1; i >= 0; --i){
+			ans.add(tmp.get(i));
+		}
+		return ans;
+	}
+
+	public int maxIceCream(int[] costs, int coins) {
+		Arrays.sort(costs);
+
+		int ans = 0;
+		for(int i = 0; i < costs.length; ++i){
+			if(costs[i] > coins){
+				return ans;
+			}
+			coins -= costs[i];
+			++ans;
+		}
+		return ans;
+	}
+
+	int getPivot(int [] nums){
+		int leftValue = nums[0];
+		int left = 0;
+		int right = nums.length - 1;
+
+		while(left <= right){
+			int mid = left + (right - left) / 2;
+
+			if(mid < nums.length - 1 && nums[mid] > nums[mid + 1]){
+				return mid + 1;
+			}
+
+			if(nums[mid] >= leftValue){
+				left = mid + 1;
+			}else{
+				right = mid - 1;
+			}
+		}
+
+		return -1;
+	}
+
+	public int search(int[] nums, int target) {
+		int left = 0;
+		int right = nums.length - 1;
+
+		if(nums[0] > nums[nums.length - 1]){
+			int pivot = getPivot(nums);
+
+			if(target < nums[0]){
+				left = pivot;
+			}else{
+				right = pivot - 1;
+			}
+		}
+
+		while(left <= right){
+			int mid = left + (right - left) / 2;
+			if(target < nums[mid]){
+				right = mid - 1;
+			}else if(target > nums[mid]){
+				left = mid + 1;
+			}else{
+				return mid;
+			}
+		}
+		return -1;
+	}
+
+	public int minDays(int[] bloomDay, int m, int k) {
+		if((long)m * (long)k > bloomDay.length){
+			return -1;
+		}
+
+		long max = Integer.MIN_VALUE;
+		for(int i = 0; i < bloomDay.length; ++i){
+			max = Math.max(bloomDay[i], max);
+		}
+
+		Set<Long> seenDays = new HashSet<>();
+
+		long left = 0;
+		long right = max * m * k;
+
+		while(left <= right){
+			long mid = left + (right - left) / 2;
+
+			long bqs = getBqs(bloomDay, mid, k);
+
+			if(m > bqs){
+				left = mid + 1;
+			}else if(m <= bqs){
+				if(seenDays.contains(mid)){
+					return (int)mid;
+				}
+				seenDays.add(mid);
+				right = mid - 1;
+			}else{
+				return (int)mid;
+			}
+		}
+		return (int)left;
+	}
+
+	long getBqs(int [] bloomDay, long days, int k){
+		long used = 0;
+		long bqs = 0;
+		for(int i = 0; i < bloomDay.length; ++i){
+			if(days >= bloomDay[i]){
+				used++;
+			}else{
+				used = 0;
+			}
+			if(used == k){
+				bqs++;
+				used = 0;
+			}
+		}
+		return bqs;
+	}
+
+
+	public int videoStitching(int[][] clips, int time) {
+		Map<Integer,Queue<Integer>> map = new HashMap<>();
+		for(int i = 0; i < clips.length; ++i){
+			map.putIfAbsent(clips[i][0], new PriorityQueue<>(Comparator.reverseOrder()));
+			Queue<Integer> queue = map.get(clips[i][0]);
+			queue.add(clips[i][1]);
+		}
+
+		int ans = 1;
+		int start = 0;
+		if(map.get(start) == null){
+			return -1;
+		}
+		int maxEnd = map.get(start).peek();
+		while(start < time){
+			if(maxEnd >= time){
+				return ans;
+			}
+			Queue<Integer> queue = map.get(start);
+			if(queue == null || queue.isEmpty()){
+				return -1;
+			}
+			int nextStart = -1;
+			for(int i = start; i <= queue.peek(); ++i){
+				Queue<Integer> q = map.get(i);
+				if(q != null){
+					if(q.peek() >= maxEnd){
+						maxEnd = q.peek();
+						nextStart = i;
+					}
+				}
+			}
+			if(nextStart <= start){
+				return -1;
+			}
+			start = nextStart;
+			++ans;
+		}
 		return ans;
 	}
 
