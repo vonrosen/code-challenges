@@ -2217,6 +2217,44 @@ public class Solution2{
 		return ans;
 	}
 
+	//O(N!), O(N)
+	public List<String> restoreIpAddresses(String s) {
+		List<String> ans = new ArrayList<>();
+		List<String> path = new ArrayList<>();
+		backtrackIp(s, 0, path, ans);
+		return ans;
+	}
+
+	void backtrackIp(String s, int start, List<String> path, List<String> ans){
+		if(start > s.length() - 1){
+			if(path.size() == 4){
+				StringBuilder sb = new StringBuilder();
+				for(String p: path){
+					sb.append(p);
+					sb.append(".");
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				ans.add(sb.toString());
+			}
+			return;
+		}
+
+		for(int end = start + 1; end <= s.length(); ++end){
+			String sub = s.substring(start, end);
+			if(sub.startsWith("0") && sub.length() > 1
+				|| sub.length() == 19 && Long.parseLong(sub.substring(0, 3)) > 922
+				|| sub.length() > 19){
+				continue;
+			}
+			long ip = Long.parseLong(s.substring(start, end));
+			if(ip >= 0 && ip <= 255){
+				path.add(String.valueOf(ip));
+				backtrackIp(s, end, path, ans);
+				path.remove(path.size() - 1);
+			}
+		}
+	}
+
 	//O(N * (N * 2 * (N * log(N))) * N^2)  ,  O(2 * N)
 	public List<String> topKFrequent2(String[] words, int k) {
 		Map<String,Integer> counts = new HashMap<>();
