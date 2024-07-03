@@ -34,7 +34,13 @@ public class Solution2{
 //		head.next.next.next.next = new ListNode();
 //		head.next.next.next.next.val = 5;
 
-		System.out.println(solution2.minDays(new int[]{7,7,7,7,12,7,7}, 2, 3));
+//		System.out.println(solution2.findMaxForm(new String[]{"11111","100","1101","1101","11000"}, 5, 7));
+		System.out.println(solution2.findMaxForm(new String[]{"10","0001","111001","1","0"}, 5, 3));
+//		System.out.println(solution2.findMaxForm(new String[]{"0","11","1000","01","0","101","1","1","1","0","0","0","0","1","0","0110101","0","11","01","00","01111","0011","1","1000","0","11101","1","0","10","0111"},
+//				9, 80));
+//		System.out.println(solution2.findMaxForm(new String[]{"1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0"},
+//				30, 30));
+
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -2418,6 +2424,73 @@ public class Solution2{
 		return bqs;
 	}
 
+	public List<List<String>> partition(String s) {
+		List<List<String>> ans = new ArrayList<>();
+		backtrackPartition(s, 0, new ArrayList<>(), ans);
+		return ans;
+	}
+
+	void backtrackPartition(String s, int start, List<String> path, List<List<String>> ans){
+		if(start >= s.length()){
+			ans.add(new ArrayList<>(path));
+			return;
+		}
+
+		for(int end = start + 1; end <= s.length(); ++end){
+			String sub = s.substring(start, end);
+			if(isP(sub)){
+				path.add(sub);
+				backtrackPartition(s, end, path, ans);
+				path.remove(path.size() - 1);
+			}
+		}
+	}
+
+	boolean isP(String s){
+		int left = 0;
+		int right = s.length() - 1;
+		while(left < right){
+			if(s.charAt(left) != s.charAt(right)){
+				return false;
+			}
+			++left;
+			--right;
+		}
+		return true;
+	}
+
+
+	public List<String> restoreIpAddresses(String s) {
+		List<String> ans = new ArrayList<>();
+		List<String> path = new ArrayList<>();
+		backtrackIp(s, 0, path, ans);
+		return ans;
+	}
+
+	void backtrackIp(String s, int start, List<String> path, List<String> ans){
+		if(start > s.length() - 1){
+			if(path.size() == 4){
+				StringBuilder sb = new StringBuilder();
+				for(String p: path){
+					sb.append(p);
+					sb.append(".");
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				ans.add(sb.toString());
+			}
+			return;
+		}
+
+		for(int end = start + 1; end <= s.length(); ++end){
+			String sub = s.substring(start, end);
+			long ip = Long.parseLong(s.substring(start, end));
+			if((!sub.startsWith("0")) && ip >= 0 && ip <= 255){
+				path.add(String.valueOf(ip));
+				backtrackIp(s, end, path, ans);
+				path.remove(path.size() - 1);
+			}
+		}
+	}
 
 	public int videoStitching(int[][] clips, int time) {
 		Map<Integer,Queue<Integer>> map = new HashMap<>();
@@ -2456,6 +2529,104 @@ public class Solution2{
 			}
 			start = nextStart;
 			++ans;
+		}
+		return ans;
+	}
+
+	public int findMaxForm(String[] strs, int m, int n) {
+		Map<Integer,Integer[]> counts = new HashMap<>();
+		int index = 0;
+		for(String s: strs){
+			int mc = 0, nc = 0;
+			for(Character c : s.toCharArray()){
+				if(c == '0'){
+					mc++;
+				}
+				if(c == '1'){
+					nc++;
+				}
+			}
+			counts.put(index, new Integer[]{mc, nc});
+			index++;
+		}
+		Map<String,Integer> mem = new HashMap<>();
+		return findMaxForm(strs, 0, m, n, counts, mem);
+	}
+
+	//"11111","100","1101","1101","11000", m=5 n=7
+	//ans=3 ("100","1101","1101")
+
+	//"10","0001","111001","1","0", m = 3, n = 4
+	//ans=3 ("10", "1", "0")
+	int findMaxForm(String[] strs, int index, int zeros, int ones, Map<Integer,Integer[]> counts,
+			Map<String,Integer> mem){
+		if(index >= strs.length){
+			return 0;
+		}
+		if(mem.containsKey(index + "-" + zeros + "-" + ones)){
+			return mem.get(index + "-" + zeros + "-" + ones);
+		}
+
+		int taken = -1;
+		if(zeros - counts.get(index)[0] >= 0 && ones - counts.get(index)[1] >= 0){
+			taken = 1 + findMaxForm(strs, index + 1, zeros - counts.get(index)[0],
+					ones - counts.get(index)[1],	counts,
+					mem);
+		}
+		int notTaken = findMaxForm(strs, index + 1, zeros, ones, counts, mem);
+		int ans = Math.max(notTaken, taken);
+
+		mem.put(index + "-" + zeros + "-" + ones, ans);
+
+		return ans;
+	}
+
+	public int findMaxForm2(String[] strs, int m, int n) {
+		Map<Integer,Integer[]> counts = new HashMap<>();
+		int index = 0;
+		for(String s: strs){
+			int mc = 0, nc = 0;
+			for(Character c : s.toCharArray()){
+				if(c == '0'){
+					mc++;
+				}
+				if(c == '1'){
+					nc++;
+				}
+			}
+			counts.put(index, new Integer[]{mc, nc});
+			index++;
+		}
+		Map<String,Integer> mem = new HashMap<>();
+		int ans = 0;
+		for(int i = 0; i < strs.length; ++i){
+			for(int j = i + 1; j < strs.length; ++j){
+				ans = Math.max(ans, findMaxForm2(strs, m, n, i, j, counts, mem));
+			}
+		}
+		return ans;
+	}
+
+	//"11111","100","1101","1101","11000", m=5 n=7
+	//ans=3 ("100","1101","1101")
+	int findMaxForm2(String[] strs, int m, int n, int index, int end, Map<Integer,Integer[]> counts,
+			Map<String,Integer> mem){
+		if(index >= strs.length){
+			return 0;
+		}
+		if(counts.get(index)[0] > m || counts.get(index)[1] > n){
+			return 0;
+		}
+		int ans = 0, mc = 0, nc = 0, size = 1;
+		for(int i = index; i < end; ++i){
+			mc += counts.get(i)[0];
+			nc += counts.get(i)[1];
+			if(mc <= m && nc <= n){
+				ans = Math.max(ans, size);
+			}else{
+				break;
+			}
+			++size;
 		}
 		return ans;
 	}
