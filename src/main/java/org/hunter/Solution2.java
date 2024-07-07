@@ -34,7 +34,8 @@ public class Solution2{
 //		head.next.next.next.next = new ListNode();
 //		head.next.next.next.next.val = 5;
 
-		System.out.println(solution2.minDays(new int[]{7,7,7,7,12,7,7}, 2, 3));
+//		System.out.println(solution2.minDays(new int[]{7,7,7,7,12,7,7}, 2, 3));
+		System.out.println(solution2.maximalSquare(new char[][]{{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1','1','1','1'},{'1','0','0','1','0'}}));
 
 //		TreeNode node = new TreeNode(4);
 //		node.left = new TreeNode(2);
@@ -2495,6 +2496,45 @@ public class Solution2{
 			start = nextStart;
 			++ans;
 		}
+		return ans;
+	}
+
+	public int maximalSquare(char[][] matrix) {
+		int [][] mem = new int[matrix.length][matrix[0].length];
+		for(int i = 0; i < mem.length; ++i){
+			Arrays.fill(mem[i], -1);
+		}
+		int depth = 0;
+		for(int i = 0; i < matrix.length; ++i){
+			for(int j = 0; j < matrix[0].length; ++j){
+				depth = Math.max(depth, maximalSquare(matrix, i, j, 0, mem));
+			}
+		}
+		return (int)Math.pow(depth, 2);
+	}
+
+	boolean validMaximalSquare(char [][] matrix, int row, int col){
+		if(row >= matrix.length || col >= matrix[0].length){
+			return false;
+		}
+		return true;
+	}
+
+	int maximalSquare(char [][] matrix, int row, int col, int depth, int [][] mem){
+		if(!validMaximalSquare(matrix, row, col)){
+			return 0;
+		}
+		if(mem[row][col] != -1){
+			return mem[row][col];
+		}
+		int ans = 0;
+		if(matrix[row][col] == '1'){
+			int d1 = maximalSquare(matrix, row, col + 1, depth + 1, mem);
+			int d2 = maximalSquare(matrix, row + 1, col + 1, depth + 1, mem);
+			int d3 = maximalSquare(matrix, row + 1, col, depth + 1, mem);
+			ans = 1 + Math.min(Math.min(d1, d2), d3);
+		}
+		mem[row][col] = ans;
 		return ans;
 	}
 
