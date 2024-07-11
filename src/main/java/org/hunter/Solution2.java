@@ -35,11 +35,17 @@ public class Solution2{
 //		head.next.next.next.next.val = 5;
 
 //		System.out.println(solution2.findMaxForm(new String[]{"11111","100","1101","1101","11000"}, 5, 7));
-		System.out.println(solution2.findMaxForm(new String[]{"10","0001","111001","1","0"}, 5, 3));
+//		System.out.println(solution2.findMaxForm(new String[]{"10","0001","111001","1","0"}, 5, 3));
 //		System.out.println(solution2.findMaxForm(new String[]{"0","11","1000","01","0","101","1","1","1","0","0","0","0","1","0","0110101","0","11","01","00","01111","0011","1","1000","0","11101","1","0","10","0111"},
 //				9, 80));
 //		System.out.println(solution2.findMaxForm(new String[]{"1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0"},
 //				30, 30));
+
+		System.out.println(solution2.maximalSquare(new char[][]{{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1',
+				'1','1','1'},{'1','0','0','1','0'}}));
+
+//		System.out.println(solution2.maximalSquare(new char[][]{{'0'},{'1'}}));
+
 
 
 //		TreeNode node = new TreeNode(4);
@@ -2581,53 +2587,121 @@ public class Solution2{
 		return ans;
 	}
 
-	public int findMaxForm2(String[] strs, int m, int n) {
-		Map<Integer,Integer[]> counts = new HashMap<>();
-		int index = 0;
-		for(String s: strs){
-			int mc = 0, nc = 0;
-			for(Character c : s.toCharArray()){
-				if(c == '0'){
-					mc++;
-				}
-				if(c == '1'){
-					nc++;
-				}
-			}
-			counts.put(index, new Integer[]{mc, nc});
-			index++;
-		}
+	public int maximalSquare(char[][] matrix) {
 		Map<String,Integer> mem = new HashMap<>();
+
 		int ans = 0;
-		for(int i = 0; i < strs.length; ++i){
-			for(int j = i + 1; j < strs.length; ++j){
-				ans = Math.max(ans, findMaxForm2(strs, m, n, i, j, counts, mem));
+		for(int i = 0; i < matrix.length; ++i){
+			for(int j = 0; j < matrix[0].length; ++j){
+				boolean [][] seen = new boolean[matrix.length][matrix[0].length];
+				ans = Math.max(ans, maximalSquare(matrix, i, j, seen, mem));
+			}
+		}
+		double finalAns = 0;
+		for(int i = 1; i <= 300; ++i){
+			double size = Math.pow(i, 2);
+			if(ans < size){
+				ans = (int)finalAns;
+				break;
+			}
+			finalAns = size;
+		}
+		return ans;
+	}
+
+	int maximalSquare(char [][] matrix, int i, int j, boolean[][] seen, Map<String,Integer> mem){
+		if(!validMaximalSquare(matrix, i, j, seen)){
+			return 0;
+		}
+		int ans = 0;
+		if(matrix[i][j] == '1'){
+			seen[i][j] = true;
+			int ans1 = maximalSquare(matrix, i, j + 1, seen, mem);
+			if(ans1 == 0){
+				return 0;
+			}
+			int ans2 = maximalSquare(matrix, i + 1, j + 1, seen, mem);
+			if(ans2 == 0){
+				return 0;
+			}
+			int ans3 = maximalSquare(matrix, i + 1, j, seen, mem);
+			if(ans3 == 0){
+				return 0;
+			}
+			ans = 1 + ans1 + ans2 + ans3;
+		}
+		return ans;
+	}
+
+	boolean validMaximalSquare(char [][] matrix, int i, int j, boolean [][] seen){
+		if(i >= matrix.length){
+			return false;
+		}
+		if(j >= matrix[0].length){
+			return false;
+		}
+		if(seen[i][j]){
+			return false;
+		}
+		return true;
+	}
+
+	public int maximalSquare2(char[][] matrix) {
+		int min = Math.min(matrix.length, matrix[0].length);
+		int maxSize = min * min;
+		int ans = 0;
+		for(int i = 0; i < matrix.length; ++i){
+			for(int j = 0; j < matrix[i].length; ++j){
+				ans = Math.max(ans, maximalSquare2(matrix, i, i, j, j));
+			}
+			if(ans == maxSize){
+				return ans;
 			}
 		}
 		return ans;
 	}
 
-	//"11111","100","1101","1101","11000", m=5 n=7
-	//ans=3 ("100","1101","1101")
-	int findMaxForm2(String[] strs, int m, int n, int index, int end, Map<Integer,Integer[]> counts,
-			Map<String,Integer> mem){
-		if(index >= strs.length){
+	boolean validMaximalSquare2(char [][] matrix, int rowStart, int rowEnd, int colStart, int colEnd){
+		if(rowStart >= matrix.length){
+			return false;
+		}
+		if(rowEnd >= matrix.length){
+			return false;
+		}
+		if(colStart >= matrix[0].length){
+			return false;
+		}
+		if(colEnd >= matrix[0].length){
+			return false;
+		}
+		return true;
+	}
+
+	int maximalSquare2(char [][] matrix, int rowStart, int rowEnd, int colStart, int colEnd){
+		if(!validMaximalSquare2(matrix, rowStart, rowEnd, colStart, colEnd)){
 			return 0;
 		}
-		if(counts.get(index)[0] > m || counts.get(index)[1] > n){
-			return 0;
-		}
-		int ans = 0, mc = 0, nc = 0, size = 1;
-		for(int i = index; i < end; ++i){
-			mc += counts.get(i)[0];
-			nc += counts.get(i)[1];
-			if(mc <= m && nc <= n){
-				ans = Math.max(ans, size);
-			}else{
+		int ans = 0;
+		for(int row = rowStart; row <= rowEnd; ++row){
+			if(matrix[row][colEnd] == '0'){
+				ans = 0;
 				break;
 			}
-			++size;
+			++ans;
 		}
+		if(ans > 0){
+			for(int col = colStart; col < colEnd; ++col){
+				if(matrix[rowEnd][col] == '0'){
+					ans = 0;
+					break;
+				}
+				++ans;
+			}
+		}
+		if(ans > 0){
+			ans += maximalSquare2(matrix, rowStart, rowEnd + 1, colStart, colEnd + 1);
+		}
+
 		return ans;
 	}
 
