@@ -41,11 +41,21 @@ public class Solution2{
 //		System.out.println(solution2.findMaxForm(new String[]{"1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0","1","0"},
 //				30, 30));
 
-		System.out.println(solution2.maximalSquare(new char[][]{{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1',
-				'1','1','1'},{'1','0','0','1','0'}}));
+//		System.out.println(solution2.maximalSquare(new char[][]{{'1','0','1','0','0'},{'1','0','1','1','1'},{'1','1',
+//				'1','1','1'},{'1','0','0','1','0'}}));
 
 //		System.out.println(solution2.maximalSquare(new char[][]{{'0'},{'1'}}));
 
+		int[] arr = new int[]{10, 88, 2, 77, 76, 72, 33, 44};
+//		solution2.sort(arr);
+//		for(int i = 0; i < arr.length; ++i){
+//			System.out.println(arr[i]);
+//		}
+
+		solution2.mergeSort(arr);
+		for(int i = 0; i < arr.length; ++i){
+			System.out.println(arr[i]);
+		}
 
 
 //		TreeNode node = new TreeNode(4);
@@ -2703,6 +2713,95 @@ public class Solution2{
 		}
 
 		return ans;
+	}
+
+	int[] sort(int [] arr){
+		return sort(arr, 0, arr.length - 1);
+	}
+
+	int[] sort(int [] arr, int start, int end){
+		if(start >= end){
+			return arr;
+		}
+		int pivot = arrangeAndFindPivot(arr, start, end);
+		sort(arr, start, pivot);
+		sort(arr, pivot + 1, end);
+		return arr;
+	}
+
+	int arrangeAndFindPivot(int [] arr, int start, int end){
+		int pivot = start + (end - start) / 2;
+		int pivotValue = arr[pivot];
+		for(int i = start; i <= end; ++i){
+			if(arr[i] > pivotValue && i < pivot){
+				swap(arr, i, pivot);
+				pivot = i;
+			}
+			if(arr[i] < pivotValue && i > pivot){
+				swap(arr, i, pivot);
+				pivot = i;
+			}
+		}
+		return pivot;
+	}
+
+	void swap(int [] arr, int i, int i2){
+		int tmp = arr[i];
+		arr[i] = arr[i2];
+		arr[i2] = tmp;
+	}
+
+	void mergeSort(int [] arr){
+		mergeSort(arr, 0, arr.length - 1);
+	}
+
+	void mergeSort(int [] arr, int start, int end){
+		if(start >= end){
+			return;
+		}
+		int mid = start + (end - start) / 2;
+		mergeSort(arr, start, mid);
+		mergeSort(arr, mid + 1, end);
+		merge(arr, start, mid, end);
+	}
+
+	void merge(int [] arr, int start, int mid, int end){
+		int l1 = mid - start + 1;
+		int l2 = end - mid;
+
+		int[] left = new int[l1];
+		int[] right = new int[l2];
+
+		for(int i = 0; i < l1; ++i){
+			left[i] = arr[i + start];
+		}
+		for(int i = 0; i < l2; ++i){
+			right[i] = arr[i + mid + 1];
+		}
+
+		int indexLeft = 0, indexRight = 0, index = start;
+		while(indexLeft < l1 && indexRight < l2){
+			if(left[indexLeft] < right[indexRight]){
+				arr[index] = left[indexLeft];
+				++indexLeft;
+			}else{
+				arr[index] = right[indexRight];
+				++indexRight;
+			}
+			++index;
+		}
+
+		while(indexLeft < l1){
+			arr[index] = left[indexLeft];
+			++indexLeft;
+			++index;
+		}
+
+		while(indexRight < l2){
+			arr[index] = right[indexRight];
+			++indexRight;
+			++index;
+		}
 	}
 
 }
