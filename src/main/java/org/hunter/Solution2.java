@@ -2618,3 +2618,35 @@ class StockSpanner {
 		return span;
 	}
 }
+
+class QueueWithStacks{
+
+	Stack<Integer> s1 = new Stack<>();
+	Stack<Integer> s2 = new Stack<>();
+
+	public void enqueue(int v){
+		if(s1.isEmpty() && s2.isEmpty()){
+			s2.add(v);
+			return;
+		}
+		s1.add(v);
+	}
+
+	public Integer dequeue(){
+		if(s2.isEmpty()){
+			return null;
+		}
+		int front = s2.pop();
+		if(s2.isEmpty()){
+			while(!s1.isEmpty()){
+				s2.add(s1.pop());
+			}
+		}
+		return front;
+	}
+
+	public Integer print(){
+		return s2.peek();
+	}
+
+}
