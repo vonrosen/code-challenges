@@ -75,6 +75,36 @@ public class Solution2{
 
 	}
 
+	public void qs(int [] arr){
+		qs(arr, 0, arr.length - 1);
+	}
+
+	void qs(int [] arr, int start, int end){
+		if(start >= end){
+			return;
+		}
+		int pivot = qsp(arr, start, end);
+		qs(arr, start, pivot);
+		qs(arr, pivot + 1, end);
+	}
+
+	int qsp(int [] arr, int start, int end){
+		int pivotValue = arr[start];
+		int lastLowerIndex = start;
+		for(int i = start; i <= end; ++i){
+			if(arr[i] < pivotValue){
+				lastLowerIndex++;
+				int tmp = arr[lastLowerIndex];
+				arr[lastLowerIndex] = arr[i];
+				arr[i] = tmp;
+			}
+		}
+		int tmp = arr[start];
+		arr[start] = arr[lastLowerIndex];
+		arr[lastLowerIndex] = tmp;
+		return lastLowerIndex;
+	}
+	
 	public int findMaxLength(int[] nums) {
 		int count = 0;
 		int ans = 0;
