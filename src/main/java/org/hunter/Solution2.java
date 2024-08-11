@@ -75,6 +75,32 @@ public class Solution2{
 
 	}
 
+	public TreeNode insertIntoBST(TreeNode root, int val) {
+        	if(root == null){
+			return new TreeNode(val);
+		}
+		insert(root, val);
+		return root;        
+	}	
+    
+    	boolean insert(TreeNode node, int val){
+		if(node == null){
+			return true;
+		}
+		if(node.val > val){
+			if(insert(node.left, val)){
+				node.left = new TreeNode(val);
+			}
+			return false;
+		}else if(node.val < val){
+			if(insert(node.right, val)){
+				node.right = new TreeNode(val);
+			}
+			return false;
+		}
+		return false;
+    	}
+
 	public void qs(int [] arr){
 		qs(arr, 0, arr.length - 1);
 	}
