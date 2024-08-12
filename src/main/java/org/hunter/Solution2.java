@@ -76,6 +76,58 @@ public class Solution2{
 	}
 
 
+	public static List<Integer> bfs(int n, int m, List<List<Integer>> edges, int s) {
+		// Write your code here
+		Map<Integer,List<Integer>> edgeMap = new HashMap<>();
+		for(List<Integer> edge: edges){
+			edgeMap.putIfAbsent(edge.get(0), new ArrayList<>());
+			edgeMap.putIfAbsent(edge.get(1), new ArrayList<>());
+			edgeMap.get(edge.get(0)).add(edge.get(1));
+			edgeMap.get(edge.get(1)).add(edge.get(0));
+		}
+		Map<Integer,List<Integer>> graph = new HashMap<>();
+		for(int i = 1; i <= n; ++i){
+			graph.putIfAbsent(i, new ArrayList<>());
+			if(edgeMap.get(i) != null){
+				graph.get(i).addAll(edgeMap.get(i));
+			}
+		}
+		Set<Integer> visited = new HashSet<>();
+		List<Integer> ans = new ArrayList<>();
+		Map<Integer,Integer> ans2 = new TreeMap<>();
+		Queue<Integer> q = new LinkedList<>();
+		q.add(s);
+		visited.add(s);
+		int depth = 1;
+		while(!q.isEmpty()){
+			int size = q.size();
+			for(int i = 0; i < size; ++i){
+				Integer node = q.poll();
+				for(int nextNode : graph.get(node)){
+					if(!visited.contains(nextNode)){
+						visited.add(nextNode);
+						ans2.put(nextNode, depth * 6);
+						q.add(nextNode);
+					}
+				}
+			}
+			depth++;
+		}
+		for(int i = 1; i <= n; ++i){
+			if(i != s){
+				Integer dist = ans2.get(i);
+				if(dist == null){
+					ans.add(-1);
+				}else{
+					ans.add(dist);
+				}
+			}
+		}
+		return ans;
+	}
+
+
+	
     public int maxDepth(TreeNode root) {
         if(root == null){
             return 0;
