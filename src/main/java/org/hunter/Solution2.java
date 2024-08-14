@@ -76,6 +76,56 @@ public class Solution2{
 	}
 
 
+		public static int quickestWayUp(List<List<Integer>> ladders, List<List<Integer>> snakes) {
+		Map<Integer,Integer> lad = new HashMap<>();
+		Map<Integer,Integer> snak = new HashMap<>();
+		for(List<Integer> l: ladders){
+			lad.put(l.get(0), l.get(1));
+		}
+		for(List<Integer> s: snakes){
+			snak.put(s.get(0), s.get(1));
+		}
+
+		// Write your code here
+		Queue<State> q = new LinkedList<>();
+		Set<Integer> visited = new HashSet<>();
+
+		q.add(new State(0, 1));
+
+		while(!q.isEmpty()){
+			State state = q.poll();
+			if(state.square == 100){
+				return state.moves;
+			}
+			if(!visited.contains(state.square)){
+				visited.add(state.square);
+				if(state.square < 100){
+					if(lad.containsKey(state.square)){
+						q.add(new State(state.moves, lad.get(state.square)));
+					}else if(snak.containsKey(state.square)){
+						q.add(new State(state.moves, snak.get(state.square)));
+					}else{
+						for(int i = 1; i <= 6; ++i){
+							q.add(new State(state.moves + 1, state.square + i));
+						}
+					}
+				}
+			}
+		}
+		return -1;
+	}
+
+	static class State{
+		int moves;
+		int square;
+
+		State(int moves, int square){
+			this.moves = moves;
+			this.square = square;
+		}
+	}
+
+
 	public static List<Integer> bfs(int n, int m, List<List<Integer>> edges, int s) {
 		// Write your code here
 		Map<Integer,List<Integer>> edgeMap = new HashMap<>();
