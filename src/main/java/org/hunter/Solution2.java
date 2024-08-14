@@ -76,6 +76,33 @@ public class Solution2{
 	}
 
 
+		public String minRemoveToMakeValid(String s) {
+		Stack<Character> stack = new Stack<>();
+		Stack<Integer> pos = new Stack<>();
+		for(int i = 0; i < s.length(); ++i){
+			char c = s.charAt(i);
+			if(c == '('){
+				stack.push(c);
+				pos.push(i);
+			}else if(c == ')'){
+				if(!stack.isEmpty() && stack.peek() == '('){
+					stack.pop();
+					pos.pop();
+				}else{
+					stack.push(c);
+					pos.push(i);
+				}
+			}
+		}
+		StringBuilder ans = new StringBuilder();
+		for(int i = 0; i < s.length(); ++i){
+			if(!pos.contains(i)){
+				ans.append(s.charAt(i));
+			}
+		}
+		return ans.toString();
+	}
+
 		public static int quickestWayUp(List<List<Integer>> ladders, List<List<Integer>> snakes) {
 		Map<Integer,Integer> lad = new HashMap<>();
 		Map<Integer,Integer> snak = new HashMap<>();
