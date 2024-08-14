@@ -103,6 +103,30 @@ public class Solution2{
 		return ans.toString();
 	}
 
+
+	public int[][] kClosest2(int[][] points, int k) {
+		Queue<Integer[]> q = new PriorityQueue<>((p1, p2) -> {
+			double p1Dist = Math.sqrt((Math.pow(p1[0], 2) + Math.pow(p1[1], 2)));
+			double p2Dist = Math.sqrt((Math.pow(p2[0], 2) + Math.pow(p2[1], 2)));
+			if(p1Dist < p2Dist){
+				return -1;
+			}
+			if(p1Dist == p2Dist){
+				return 0;
+			}
+			return 1;
+		});
+		for(int i = 0; i < points.length; ++i){
+			q.add(new Integer[]{points[i][0], points[i][1]});
+		}
+		int [][] ans = new int[k][2];
+		for(int i = 0; i < k; ++i){
+			Integer [] a = q.poll();
+			ans[i] = new int[]{ a[0], a[1] };
+		}
+		return ans;
+	}
+
 		public static int quickestWayUp(List<List<Integer>> ladders, List<List<Integer>> snakes) {
 		Map<Integer,Integer> lad = new HashMap<>();
 		Map<Integer,Integer> snak = new HashMap<>();
