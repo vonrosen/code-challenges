@@ -123,6 +123,57 @@ public class Solution2{
 		return ans;
 	}
 
+	public int numIslands(char[][] grid) {
+		int ans = 0;
+		boolean [][] visited = new boolean[grid.length][grid[0].length];
+		for(int i = 0; i < grid.length; ++i){
+			for(int j = 0; j < grid[0].length; ++j){
+				if(dfsNumIslands(grid, i, j, visited)){
+					ans++;
+				}
+			}
+		}
+		return ans;
+	}
+
+	boolean dfsNumIslands(char [][] grid, int i, int j, boolean [][] visited){
+		if(!validNumIslands(grid, i, j, visited)){
+			return false;
+		}
+		if(grid[i][j] == '1'){
+			visited[i][j] = true;
+            dfsNumIslands(grid, i - 1, j, visited);
+			dfsNumIslands(grid, i, j + 1, visited);
+			dfsNumIslands(grid, i + 1, j, visited);
+			dfsNumIslands(grid, i, j - 1, visited);
+			return true;
+		}
+		return false;
+	}
+
+    private boolean validNumIslands(char [][] grid, int i, int j, boolean [][] visited){
+		if(i > grid.length - 1){
+			return false;
+		}
+		if(j > grid[0].length - 1){
+			return false;
+		}
+        if(i < 0){
+            return false;
+        }
+        if(j < 0){
+            return false;
+        }
+		if(visited[i][j]){
+			return false;
+		}
+		if(grid[i][j] == '0'){
+			return false;
+		}
+		return true;
+	}
+
+	
 	public List<List<Integer>> threeSum2(int[] nums) {
 		Arrays.sort(nums);
 		Map<String,List<Integer>> dedupe = new HashMap<>();
