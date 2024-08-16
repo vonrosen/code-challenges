@@ -103,6 +103,41 @@ public class Solution2{
 		return ans.toString();
 	}
 
+		List<List<Integer>> twoSum(int [] nums, int target, int index){
+		List<List<Integer>> ans = new ArrayList<>();
+		int low = index, high = nums.length - 1;
+		while (low < high){
+			if(nums[low] + nums[high] < target){
+				++low;
+			}else if(nums[low] + nums[high] > target){
+				--high;
+			}else{
+				List<Integer> list = new ArrayList<>();
+				list.add(nums[low]);
+				list.add(nums[high]);
+				ans.add(list);
+				++low;
+				--high;
+			}
+		}
+		return ans;
+	}
+
+	public List<List<Integer>> threeSum2(int[] nums) {
+		Arrays.sort(nums);
+		Map<String,List<Integer>> dedupe = new HashMap<>();
+		for(int i = 0; i < nums.length; ++i){
+			if(nums[i] > 0){
+				break;
+			}
+			for(List<Integer> list : twoSum(nums, -nums[i], i + 1)){
+				list.add(nums[i]);
+				Collections.sort(list);
+				dedupe.put(list.get(0) + "x" + list.get(1) + "x" + list.get(2), list);
+			}
+		}
+		return new ArrayList<>(dedupe.values());
+	}
 
 	public int[][] kClosest2(int[][] points, int k) {
 		Queue<Integer[]> q = new PriorityQueue<>((p1, p2) -> {
