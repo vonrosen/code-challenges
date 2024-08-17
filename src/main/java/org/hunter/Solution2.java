@@ -75,6 +75,46 @@ public class Solution2{
 
 	}
 
+	Node head;
+	public Node treeToDoublyList(Node root) {
+		if(root == null){
+			return root;
+		}
+		doit(root);
+		Node node = head;
+		Node last = head;
+		while(node != null){
+			last = node;
+			node = node.right;
+		}
+		head.left = last;
+		last.right = head;
+		return head;
+	}
+
+	Node doit(Node node){
+		if(node == null){
+			return null;
+		}
+		if((node.left == null && node.right == null) && head == null){
+			head = node;
+		}
+		Node left = doit(node.left);
+		if(left != null){
+			left.right = node;
+			node.left = left;
+		}
+		Node right = doit(node.right);
+		if(right != null){
+			node.right = right;
+			right.left = node;
+		}
+		if(node.right != null){
+			return node.right;
+		}
+		return node;
+	}	
+
 
 		public String minRemoveToMakeValid(String s) {
 		Stack<Character> stack = new Stack<>();
