@@ -128,6 +128,26 @@ public class Solution1{
 		return sum - numSum;
 	}
 
+	public double myPow(double x, int n) {
+		return myPowX(x, (long)n);
+	}
+
+	public double myPowX(double x, long n) {
+		if(n == 0){
+			return 1;
+		}
+		if(n == 1){
+			return x;
+		}
+		if(n < 0){
+			return 1 / myPowX(x, -n);
+		}
+		if(n % 2 == 0){
+			return myPowX(x * x, n / 2);
+		}
+		return x * myPowX(x * x, (n - 1)/ 2);
+	}
+	
 	public int countElements(int[] arr) {
 		Set<Integer> set = new HashSet<>();
 		for (int i = 0; i < arr.length; ++i) {
