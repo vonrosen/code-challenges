@@ -75,6 +75,69 @@ public class Solution2{
 
 	}
 
+	public List<List<Integer>> shortestPath(int [] nodes, int [][] edges, int start){
+		Set<Integer[]> spt = new HashSet<>();
+		Set<Integer> visited = new HashSet<>();
+		Queue<Integer[]> vertices = new PriorityQueue<>((v1, v2) -> {
+			int d1 = v1[1];
+			int d2 = v2[1];
+			if(d1 < d2){
+				return -1;
+			}
+			if(d1 == d2){
+				return 0;
+			}
+			return 1;
+		});
+		Map<Integer,List<Integer[]>> graph = new HashMap<>();
+		Map<Integer,Integer[]> nodeToVertex = new HashMap<>();
+		for(int node : nodes){
+			for(int i = 0; i < edges.length; ++i){
+				if(edges[i][0] == node){
+					graph.putIfAbsent(node, new ArrayList<>());
+					graph.putIfAbsent(edges[i][1], new ArrayList<>());
+					graph.get(node).add(new Integer[]{ edges[i][1], edges[i][2] });
+					graph.get(edges[i][1]).add(new Integer[]{ node, edges[i][2] });
+				}
+			}
+			if(node != start){
+				Integer[] vertex = new Integer[]{node, Integer.MAX_VALUE};
+				vertices.add(vertex);
+				nodeToVertex.put(node, vertex);
+			}else{
+				Integer[] startNode = new Integer[]{node, 0};
+				vertices.add(startNode);
+				nodeToVertex.put(node, startNode);
+			}
+		}
+		while(!vertices.isEmpty()){
+			Integer[] node = vertices.poll();
+			if(!visited.contains(node[0])){
+				visited.add(node[0]);
+				for(Integer[] edgeNode: graph.get(node[0])){
+					Integer[] edgeVertex = nodeToVertex.get(edgeNode[0]);
+					int d = node[1] + edgeNode[1];
+					if(d < edgeVertex[1]){
+						edgeNode[1] = d;
+						vertices.remove(edgeNode);
+						vertices.add(edgeNode);
+					}
+				}
+				spt.add(node);
+			}
+		}
+		List<List<Integer>> ans = new ArrayList<>();
+		for(Integer[] node: spt){
+			List<Integer> list = new ArrayList<>();
+			list.add(node[0]);
+			list.add(node[1]);
+
+			ans.add(list);
+		}
+		return ans;
+	}
+	
+
 	Node head;
 	public Node treeToDoublyList(Node root) {
 		if(root == null){
