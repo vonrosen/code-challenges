@@ -75,6 +75,41 @@ public class Solution2{
 
 	}
 
+	public int[][] merge(int[][] intervals) {
+		Queue<int[]> q = new LinkedList<>();
+		for(int i = 0; i < intervals.length; ++i){
+			q.add(intervals[i]);
+		}
+		List<int[]> ans = new ArrayList<>();
+		while(!q.isEmpty()){
+			int[] interval = q.poll();
+			int min = interval[0], max = interval[1];
+			List<int[]> deleted = new ArrayList<>();
+			for(int [] i: q){
+				//1,3
+				//2,4
+				if(interval[0] <= i[1] && interval[1] >= i[0]){
+					min = Math.min(i[0], min);
+					max = Math.max(i[1], max);
+					deleted.add(i);
+				}
+			}
+			q.removeAll(deleted);
+			if(!deleted.isEmpty()){
+				q.add(new int[]{ min, max });
+			}else{
+				ans.add(new int[]{ min, max });
+			}
+		}
+		int[][] ans2 = new int[ans.size()][2];
+		for(int i = 0; i < ans.size(); ++i){
+			int[] interval = ans.get(i);
+			ans2[i][0] = interval[0];
+			ans2[i][1] = interval[1];
+		}
+		return ans2;
+	}
+	
 	public List<List<Integer>> shortestPath(int [] nodes, int [][] edges, int start){
 		Set<Integer[]> spt = new HashSet<>();
 		Set<Integer> visited = new HashSet<>();
