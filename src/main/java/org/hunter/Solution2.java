@@ -3109,3 +3109,86 @@ class QueueWithStacks{
 	}
 
 }
+
+class ListNode2{
+
+	ListNode2 next;
+	ListNode2 prev;
+	int val;
+	int key;
+
+}
+
+class LRUCache {
+
+	Map<Integer,ListNode2> cache;
+	int capacity;
+	ListNode2 head;
+	ListNode2 tail;
+
+	public LRUCache(int capacity) {
+		this.cache = new HashMap<>(capacity);
+		this.capacity = capacity;
+	}
+
+	public int get(int key) {
+		if(cache.containsKey(key)){
+			ListNode2 node = cache.get(key);
+			remove(node);
+			add(node);
+			return cache.get(key).val;
+		}
+		return -1;
+	}
+
+	public void put(int key, int value) {
+		if(cache.containsKey(key)){
+			ListNode2 node = cache.get(key);
+			node.val = value;
+			remove(node);
+			cache.put(key, node);
+			add(node);
+			return;
+		}
+		ListNode2 node = new ListNode2();
+		node.val = value;
+		node.key = key;
+		if(cache.size() == capacity){
+			remove(head);
+			cache.remove(head.key);
+		}
+		cache.put(key, node);
+		add(node);
+	}
+
+	void remove(ListNode2 node){
+		if(cache.size() == 1){
+			head = null;
+			tail = null;
+			return;
+		}
+		if(node == head){
+			head = head.next;
+			head.prev = null;
+			return;
+		}
+		if(node == tail){
+			tail = tail.prev;
+			return;
+		}
+		node.prev.next = node.next;
+		node.next.prev = node.prev;
+	}
+
+	void add(ListNode2 node){
+		if(head == null){
+			head = node;
+			tail = node;
+			return;
+		}
+		tail.next = node;
+		node.prev = tail;
+		tail = node;
+	}
+}
+
