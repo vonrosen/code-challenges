@@ -76,6 +76,43 @@ public class Solution2{
 	}
 
 
+	public int findPeakElement(int[] nums) {
+		return findPeakElement(nums, 0, nums.length - 1);
+	}
+
+	Integer findPeakElement(int[] nums, int start, int end){
+		if(start == end){
+			if(start == 0 && start == nums.length - 1){
+				return start;
+			}
+			if(start == 0){
+				if(nums[start] > nums[start + 1]){
+					return start;
+				}
+				return null;
+			}
+			if(start == nums.length - 1){
+				if(nums[start] > nums[start - 1]){
+					return start;
+				}
+				return null;
+			}
+			if(nums[start - 1] < nums[start] && nums[start] > nums[start + 1]){
+				return start;
+			}
+			return null;
+		}
+		int mid = start + (end - start) / 2;
+		Integer peak = findPeakElement(nums, start, mid);
+		Integer peak2 = findPeakElement(nums, mid + 1, end);
+		if(peak != null){
+			return peak;
+		}
+		return peak2;
+	}
+
+	
+
 	class ListNode2{
 
 	ListNode2 next;
