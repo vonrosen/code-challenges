@@ -76,6 +76,32 @@ public class Solution2{
 	}
 
 
+boolean oneEditApart2(String s1, String s2){
+    int diff = 0;
+    String small;
+    String big;
+    if(s1.length() > s2.length()){
+      big = s1;
+      small = s2;
+    }else{
+      big = s2;
+      small = s1;
+    }
+    int smallIndex = 0;
+    for(int largeIndex = 0; largeIndex < big.length(); ++largeIndex){
+      if(smallIndex < small.length()){
+        if(big.charAt(largeIndex) == small.charAt(smallIndex)){
+          ++smallIndex;
+        }else{
+          diff++;
+        }
+      }else{
+        diff++;
+      }
+    }
+    return diff <= 1;
+  }
+
 	public int findPeakElement(int[] nums) {
 		return findPeakElement(nums, 0, nums.length - 1);
 	}
