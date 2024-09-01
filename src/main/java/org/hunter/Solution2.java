@@ -75,7 +75,89 @@ public class Solution2{
 
 	}
 
+	//1*2-3/4+5*6-7*8+9/10
+	//2 - 1 + 30 - 56 + 1
+	public int calculate(String s) {
+		s = s.replace(" ", "");
+		List<Integer> nums = new ArrayList<>();
+		List<String> ops = new ArrayList<>();
+		StringBuilder last = new StringBuilder();
+		for(char c : s.toCharArray()){
+			if(c == '-' || c == '+' || c == '*' || c == '/'){
+				nums.add(Integer.parseInt(last.toString()));
+				ops.add(String.valueOf(c));
+				last = new StringBuilder();
+			}else{
+				last.append(c);
+			}
+		}
+		nums.add(Integer.parseInt(last.toString()));
+		if(ops.isEmpty()){
+			return nums.get(0);
+		}
+		List<String> tmpOps = new ArrayList<>(ops);
+		int i = 0;
+		while(!tmpOps.isEmpty()){
+			String op = tmpOps.remove(0);
+			if(op.equals("*")){
+				Integer left = nums.get(i);
+				Integer right = nums.get(i + 1);
+				nums.remove(i);
+				nums.remove(i);
+				nums.add(i, left * right);
+				ops.remove(i);
+			}else if(op.equals("/")){
+				Integer left = nums.get(i);
+				Integer right = nums.get(i + 1);
+				nums.remove(i);
+				nums.remove(i);
+				nums.add(i, left / right);
+				ops.remove(i);
+			}else{
+				++i;
+			}
+		}
+		if(ops.isEmpty()){
+			return nums.get(0);
+		}
+		int ans = 0;
+		for(i = 0; i < ops.size(); ++i){
+			String op = ops.get(i);
+			if(op.equals("+")){
+				Integer left = nums.get(i);
+				Integer right = nums.get(i + 1);
+				if(left != null && right != null){
+					ans += left + right;
+					nums.set(i, null);
+					nums.set(i + 1, null);
+				}else if(left != null){
+					ans += left;
+					nums.set(i, null);
+				}else if(right != null){
+					ans += right;
+					nums.set(i + 1, null);
+				}
+			}
+			else if(op.equals("-")){
+				Integer left = nums.get(i);
+				Integer right = nums.get(i + 1);
+				if(left != null && right != null){
+					ans += left - right;
+					nums.set(i, null);
+					nums.set(i + 1, null);
+				}else if(left != null){
+					ans -= left;
+					nums.set(i, null);
+				}else if(right != null){
+					ans -= right;
+					nums.set(i + 1, null);
+				}
+			}
+		}
+		return ans;
+	}
 
+	
 boolean oneEditApart2(String s1, String s2){
     int diff = 0;
     String small;
