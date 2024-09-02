@@ -75,6 +75,21 @@ public class Solution2{
 
 	}
 
+	public int subarraySum(int[] nums, int k) {
+		Map<Integer,Integer> counts = new HashMap<>();
+        counts.put(0, 1);
+        int prefix = 0;
+        int ans = 0;
+
+        for(int n : nums){
+            prefix += n;
+            ans += counts.getOrDefault(prefix - k, 0);
+            counts.put(prefix, counts.getOrDefault(prefix, 0) + 1);
+        }
+
+        return ans;
+	}
+	
 	public int calculate(String s) {
 		s = s.replace(" ", "");
 		StringBuilder currentNumber = new StringBuilder();
