@@ -75,6 +75,93 @@ public class Solution2{
 
 	}
 
+		public int largestIsland(int[][] grid) {
+		Map<Integer,Integer> compCounts = new HashMap<>();
+		Map<String,Set<Integer>> borderToComps = new HashMap<>();
+		int[][] dirs = new int[][]{
+				{-1, 0},
+				{0, 1},
+				{1, 0},
+				{0, -1}
+		};
+		boolean [][] visited = new boolean[grid.length][grid[0].length];
+		int compId = 0;
+		for(int i = 0; i < grid.length; ++i){
+			for(int j = 0; j < grid[0].length; ++j){
+				if(grid[i][j] == 1){
+					int size = dfsLargestIsland(compId, grid, i, j, borderToComps, visited, dirs);
+					if(size > 0){
+						compCounts.put(compId, size);
+						++compId;
+					}
+				}
+			}
+		}
+		if(compCounts.size() == 0){
+			return 1;
+		}
+		if(compCounts.size() == 1){
+			if(compCounts.get(0) == grid.length * grid[0].length){
+				return grid.length * grid[0].length;
+			}
+			return compCounts.get(0) + 1;
+		}
+		int ans = 0;
+		for(Set<Integer> comps : borderToComps.values()){
+			int idCount = 0;
+			for(int id : comps){
+				idCount += compCounts.get(id);
+			}
+			ans = Math.max(ans, idCount + 1);
+		}
+		return ans;
+	}
+
+	boolean isValidDfsLargestIsland(int compId, int [][] grid, int r, int c,
+			Map<String,Set<Integer>> borderToComps,
+			boolean [][] visited){
+		if(r > grid.length - 1 || r < 0){
+			return false;
+		}
+		if(c > grid[0].length - 1 || c < 0){
+			return false;
+		}
+		if(grid[r][c] == 0){
+			String key = r + "-" + c;
+			if(borderToComps.containsKey(key)){
+				for(int id: borderToComps.get(key)){
+					if(id != compId){
+						borderToComps.putIfAbsent(key, new HashSet<>());
+						borderToComps.get(key).add(id);
+					}
+				}
+			}
+			borderToComps.putIfAbsent(key, new HashSet<>());
+			borderToComps.get(key).add(compId);
+		}
+		if(visited[r][c]){
+			return false;
+		}
+		return true;
+	}
+
+	int dfsLargestIsland(int compId, int [][] grid, int r, int c, Map<String,Set<Integer>> borderToComps, boolean [][] visited,
+			int [][] dirs){
+		if(!isValidDfsLargestIsland(compId, grid, r, c, borderToComps, visited)){
+			return 0;
+		}
+		int size = 0;
+		if(grid[r][c] == 1){
+			visited[r][c] = true;
+			size++;
+			for(int i = 0; i < dirs.length; ++i){
+				size += dfsLargestIsland(compId, grid, r + dirs[i][0], c + dirs[i][1], borderToComps, visited,
+						dirs);
+			}
+		}
+		return size;
+	}
+
 	public int subarraySum(int[] nums, int k) {
 		Map<Integer,Integer> counts = new HashMap<>();
         counts.put(0, 1);
