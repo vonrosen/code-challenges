@@ -75,6 +75,31 @@ public class Solution2{
 
 	}
 
+		public List<Integer> rightSideView(TreeNode root) {
+		List<Integer> ans = new ArrayList<>();
+		if(root == null){
+			return ans;
+		}
+		Queue<TreeNode> q = new LinkedList<>();
+		q.add(root);
+		while(!q.isEmpty()){
+			int size = q.size();
+			for(int i = 0; i < size; ++i){
+				TreeNode n = q.poll();
+				if(i == size - 1){
+					ans.add(n.val);
+				}
+				if(n.left != null){
+					q.add(n.left);
+				}
+				if(n.right != null){
+					q.add(n.right);
+				}
+			}
+		}
+		return ans;
+	}
+
 		public int largestIsland(int[][] grid) {
 		Map<Integer,Integer> compCounts = new HashMap<>();
 		Map<String,Set<Integer>> borderToComps = new HashMap<>();
