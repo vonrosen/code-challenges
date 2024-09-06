@@ -142,6 +142,43 @@ public class Solution2{
 		return ans;
 	}
 
+
+	//iterator of tree printing in post traveral order
+	static class Impl implements Iterator<TreeNode>{
+
+		private TreeNode root;
+		private Stack<TreeNode> stack;
+		boolean init = false;
+
+		Impl(TreeNode root){
+			this.root = root;
+			this.stack = new Stack<>();
+		}
+
+		@Override
+		public boolean hasNext(){
+			if(!init && stack.isEmpty()){
+				dfs(root);
+			}
+			init = true;
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public TreeNode next(){
+			return stack.pop();
+		}
+
+		private void dfs(TreeNode node){
+			if(node == null){
+				return;
+			}
+			stack.add(node);
+			dfs(node.right);
+			dfs(node.left);
+		}
+	}
+
 	boolean isValidDfsLargestIsland(int compId, int [][] grid, int r, int c,
 			Map<String,Set<Integer>> borderToComps,
 			boolean [][] visited){
