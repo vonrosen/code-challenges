@@ -179,6 +179,36 @@ public class Solution2{
 		}
 	}
 
+		//System.out.println(s.customSortString("kqep", "pekeq"));
+	//O(n + m*n + m)
+	public String customSortString(String order, String s) {
+		Map<Character,Integer> sMap = new HashMap<>();
+		for(char c : s.toCharArray()){
+			sMap.putIfAbsent(c, 0);
+			sMap.put(c, sMap.get(c) + 1);
+		}
+		StringBuilder sb = new StringBuilder();
+		for(char c : order.toCharArray()){
+			if(sMap.containsKey(c)){
+				int count = sMap.get(c);
+				while(count > 0){
+					sb.append(c);
+					--count;
+				}
+				sMap.remove(c);
+			}
+		}
+		StringBuilder end = new StringBuilder();
+		for(char c : sMap.keySet()){
+			int count = sMap.get(c);
+			while(count > 0){
+				end.append(c);
+				--count;
+			}
+		}
+		return sb.toString() + end;
+	}
+
 	boolean isValidDfsLargestIsland(int compId, int [][] grid, int r, int c,
 			Map<String,Set<Integer>> borderToComps,
 			boolean [][] visited){
