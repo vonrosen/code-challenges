@@ -1,23 +1,8 @@
 package org.hunter;
 
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
 
 public class Solution2{
 
@@ -144,7 +129,7 @@ public class Solution2{
 
 
 	//iterator of tree printing in post traveral order
-	static class Impl implements Iterator<TreeNode>{
+	static class Impl implements Iterator<TreeNode> {
 
 		private TreeNode root;
 		private Stack<TreeNode> stack;
@@ -578,44 +563,44 @@ class LRUCache {
 	
 
 	Node head;
-	public Node treeToDoublyList(Node root) {
-		if(root == null){
-			return root;
-		}
-		doit(root);
-		Node node = head;
-		Node last = head;
-		while(node != null){
-			last = node;
-			node = node.right;
-		}
-		head.left = last;
-		last.right = head;
-		return head;
-	}
-
-	Node doit(Node node){
-		if(node == null){
-			return null;
-		}
-		if((node.left == null && node.right == null) && head == null){
-			head = node;
-		}
-		Node left = doit(node.left);
-		if(left != null){
-			left.right = node;
-			node.left = left;
-		}
-		Node right = doit(node.right);
-		if(right != null){
-			node.right = right;
-			right.left = node;
-		}
-		if(node.right != null){
-			return node.right;
-		}
-		return node;
-	}	
+//	public Node treeToDoublyList(Node root) {
+//		if(root == null){
+//			return root;
+//		}
+//		doit(root);
+//		Node node = head;
+//		Node last = head;
+//		while(node != null){
+//			last = node;
+//			node = node.right;
+//		}
+//		head.left = last;
+//		last.right = head;
+//		return head;
+//	}
+//
+//	Node doit(Node node){
+//		if(node == null){
+//			return null;
+//		}
+//		if((node.left == null && node.right == null) && head == null){
+//			head = node;
+//		}
+//		Node left = doit(node.left);
+//		if(left != null){
+//			left.right = node;
+//			node.left = left;
+//		}
+//		Node right = doit(node.right);
+//		if(right != null){
+//			node.right = right;
+//			right.left = node;
+//		}
+//		if(node.right != null){
+//			return node.right;
+//		}
+//		return node;
+//	}
 
 
 		public String minRemoveToMakeValid(String s) {
@@ -1446,13 +1431,13 @@ class LRUCache {
 		return ans;
 	}
 
-	public TreeNode insertIntoBST(TreeNode root, int val) {
-		if(root == null){
-			return new TreeNode(val);
-		}
-		dfsInsertIntoBST(root, val);
-		return root;
-	}
+//	public TreeNode insertIntoBST(TreeNode root, int val) {
+//		if(root == null){
+//			return new TreeNode(val);
+//		}
+//		dfsInsertIntoBST(root, val);
+//		return root;
+//	}
 
 	public boolean dfsInsertIntoBST(TreeNode root, int val) {
 		if(root == null){

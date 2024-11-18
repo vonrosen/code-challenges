@@ -11,6 +11,13 @@ import java.util.*;
  *     boolean isTarget();
  * }
  */
+
+interface GridMaster{
+      boolean canMove(char direction);
+      void move(char direction);
+      boolean isTarget();
+}
+
 public class ShortestPathHiddenGrid {
     char [] dirs = new char[]{'U','D','L','R'};
     char [] oppDirs = new char[]{'D','U','R','L'};
