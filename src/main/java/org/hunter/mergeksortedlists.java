@@ -1,10 +1,10 @@
-  class ListNode {
+class ListNode {
       int val;
       ListNode next;
       ListNode() {}
       ListNode(int val) { this.val = val; }
       ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-  }
+}
 
 class mergeksortedlists {
     public ListNode mergeKLists(ListNode[] lists) {
@@ -12,7 +12,7 @@ class mergeksortedlists {
             return null;
         }
         return mergeKLists(lists, 0, lists.length - 1);
-	}
+    }
 
     ListNode mergeKLists(ListNode[] lists, int start, int end){
         if(start == end){
