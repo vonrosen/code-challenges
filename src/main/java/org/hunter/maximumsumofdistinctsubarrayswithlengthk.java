@@ -1,3 +1,8 @@
+package org.hunter;
+
+import java.util.HashMap;
+import java.util.Map;
+
 class maximumsumofdistinctsubarrayswithlengthk {
     public long maximumSubarraySum(int[] nums, int k) {
         long sum = 0;

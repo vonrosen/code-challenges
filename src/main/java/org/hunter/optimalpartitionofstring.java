@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Set;
+
 class optimalpartitionofstring {
     public int partitionString(String s) {
         int ans = 1;
