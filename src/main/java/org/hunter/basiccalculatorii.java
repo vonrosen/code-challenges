@@ -3,12 +3,12 @@ class basiccalculatorii {
 	public int calculate(String s) {
 		int sum = 0;
 		int prod = 0;
-		StringBuilder lastNum = new StringBuilder();
+		int lastNum = 0;
 		Character lastOp = '+';
 		s = s.replace(" ", "");
 		for(char c : s.toCharArray()){
 			if(c == '+'){
-				int num = Integer.parseInt(lastNum.toString());
+				int num = lastNum;
 				if(lastOp == '-'){
 					num = num * -1;
 					lastOp = '+';
@@ -25,9 +25,9 @@ class basiccalculatorii {
 					prod = 0;
 				}
 				lastOp = c;
-				lastNum = new StringBuilder();
+				lastNum = 0;
 			}else if(c == '-'){
-				int num = Integer.parseInt(lastNum.toString());
+				int num = lastNum;
 				if(lastOp == '-'){
 					num = num * -1;
 					lastOp = '+';
@@ -44,10 +44,10 @@ class basiccalculatorii {
 					prod = 0;
 				}
 				lastOp = '-';
-				lastNum = new StringBuilder();
+				lastNum = 0;
 			}
 			else if(c == '*'){
-				int num = Integer.parseInt(lastNum.toString());
+				int num = lastNum;
 				if(lastOp == '-'){
 					num = num * -1;
 					lastOp = '+';
@@ -61,9 +61,9 @@ class basiccalculatorii {
 					prod *= num;
 				}
 				lastOp = c;
-				lastNum = new StringBuilder();
+				lastNum = 0;
 			}else if(c == '/'){
-				int num = Integer.parseInt(lastNum.toString());
+				int num = lastNum;
 				if(lastOp == '-'){
 					num = num * -1;
 					lastOp = '+';
@@ -79,12 +79,12 @@ class basiccalculatorii {
 					prod = num;
 				}
 				lastOp = c;
-				lastNum = new StringBuilder();
+				lastNum = 0;
 			}else{
-				lastNum.append(c);
+				lastNum = lastNum * 10 + (c - '0');
 			}
 		}
-		int num = Integer.parseInt(lastNum.toString());
+		int num = lastNum;
 		if(lastOp == '-'){
 			num = num * -1;
 			lastOp = '+';
