@@ -21,18 +21,12 @@ class Calculator {
         StringBuilder lastNum = new StringBuilder();
         Character lastOp = '+';
         for(char c : expression.toCharArray()){
-            if(c == '+' || c == '-'){
+            if(c == '+'){
                 int num = Integer.parseInt(lastNum.toString());
                 if(lastOp == '+'){
                     sum += num;
-                }else if(lastOp == '-'){
-                    sum -= num;
-                }else if(lastOp == '*'){
-                    prod *= num;
-                    sum += prod;
-                    prod = 0;
                 }else{
-                    prod /= num;
+                    prod *= num;
                     sum += prod;
                     prod = 0;
                 }
@@ -60,6 +54,7 @@ class Calculator {
                 }else{
                     prod /= num;
                 }
+                prod *= num;
                 lastOp = c;
                 lastNum = new StringBuilder();
             }else{
@@ -75,6 +70,8 @@ class Calculator {
             prod *= num;
         }else{
             prod /= num;
+        }else{
+            prod *= num;
         }
         return sum + prod;
     }
