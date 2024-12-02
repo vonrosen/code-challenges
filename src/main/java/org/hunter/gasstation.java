@@ -26,7 +26,6 @@ class gasstation {
                 if(sum >= 0){
                     return left % gas.length;
                 }
-                System.out.println("left " + left + " right " + right);
                 sum = 0;
                 ++left;
             }
