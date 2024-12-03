@@ -1,4 +1,4 @@
-class basiccalculatorii {
+package org.hunter;
 
 class basiccalculatorii {
 

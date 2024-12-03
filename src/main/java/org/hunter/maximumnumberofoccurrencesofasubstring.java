@@ -1,6 +1,14 @@
-import java.util.*:
+package org.hunter;
+
+import java.util.*;
 
 class maximumnumberofoccurrencesofasubstring {
+
+    public static void main(String [] args){
+        maximumnumberofoccurrencesofasubstring s = new maximumnumberofoccurrencesofasubstring();
+        System.out.println(s.maxFreq("aabcabcab", 2, 2, 3));
+
+    }
     public int maxFreq(String s, int maxLetters, int minSize, int maxSize) {
         int left = 0;
         Map<Character,Integer> letters = new HashMap<>();

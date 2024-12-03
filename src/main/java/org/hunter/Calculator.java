@@ -70,9 +70,8 @@ class Calculator {
             prod *= num;
         }else{
             prod /= num;
-        }else{
-            prod *= num;
         }
+        
         return sum + prod;
     }
 
