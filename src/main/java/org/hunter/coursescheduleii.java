@@ -6,46 +6,40 @@ class coursescheduleii {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         Map<Integer,List<Integer>> graph = new HashMap<>();
         for(int [] preq : prerequisites){
-            graph.putIfAbsent(preq[0], new ArrayList<>());
-            graph.get(preq[0]).add(preq[1]);
+            graph.putIfAbsent(preq[1], new ArrayList<>());
+            graph.get(preq[1]).add(preq[0]);
         }
-        Map<Integer,List<Integer>> ans = new HashMap<>();
+        Stack<Integer> ans = new Stack<>();
+        Set<Integer> visited = new HashSet<>();
         for(int i = 0; i < numCourses; ++i){
-            if(!dfs(graph, i, 0, ans, new HashSet<>())){
+            if(!dfs(graph, i, ans, new HashSet<>(), visited)){
                 return new int[0];
             };
         }
-        Set<Integer> added = new HashSet<>();
-        int size = ans.size();
-        List<Integer> ans2 = new ArrayList<>();
-        for(int i = size - 1; i >= 0; --i){
-            for(int course: ans.get(i)){
-                if(!added.contains(course)){
-                    ans2.add(course);
-                }
-                added.add(course);
-            }
+        int [] ansint = new int[ans.size()];
+        int i = 0;
+        while(!ans.isEmpty()){
+            ansint[i++] = ans.pop();
         }
-        int [] intans = new int[ans2.size()];
-        for(int i = 0; i < intans.length; ++i){
-            intans[i] = ans2.get(i);
-        }
-        return intans;
+        return ansint;       
     }
 
-    boolean dfs(Map<Integer,List<Integer>> graph, int course, int index, Map<Integer,List<Integer>> ans, Set<Integer> visited){
+    boolean dfs(Map<Integer,List<Integer>> graph, int course, Stack<Integer> ans, Set<Integer> visited, Set<Integer> globalVisited){
         if(visited.contains(course)){
             return false;
         }
+        if(globalVisited.contains(course)){
+            return true;
+        }
         visited.add(course);
-        ans.putIfAbsent(index, new ArrayList<>());            
-        ans.get(index).add(course);
+        globalVisited.add(course);
         for(int preq : graph.getOrDefault(course, List.of())){
-            if(!dfs(graph, preq, index + 1, ans, visited)){
+            if(!dfs(graph, preq, ans, visited, globalVisited)){
                 return false;
             }
         }
         visited.remove(course);
+        ans.add(course);
         return true;
     }
 }
