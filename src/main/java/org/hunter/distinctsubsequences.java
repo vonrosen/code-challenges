@@ -15,9 +15,9 @@ class distinctsubsequences {
         }
         int ans = 0;
         if(s.charAt(i) == t.charAt(j)){
-            ans += numDistinct(i + 1, j + 1, s, t, mem) + numDistinct(i + 1, j, s, t, mem);
+            ans = numDistinct(i + 1, j + 1, s, t, mem) + numDistinct(i + 1, j, s, t, mem);
         }else{
-            ans += numDistinct(i + 1, j, s, t, mem);
+            ans = numDistinct(i + 1, j, s, t, mem);
         }
         mem[i][j] = ans;
         return ans;
