@@ -4,7 +4,7 @@ import java.util.*;
 
 class courseschedule {
 
-	public boolean canFinish(int numCourses, int[][] prerequisites) {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
         Map<Integer,List<Integer>> graph = new HashMap<>();
         for(int [] preq : prerequisites){
             graph.putIfAbsent(preq[0], new ArrayList<>());
