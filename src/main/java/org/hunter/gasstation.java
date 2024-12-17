@@ -1,3 +1,5 @@
+package org.hunter;
+
 class gasstation {
     public int canCompleteCircuit(int[] gas, int[] cost) {
         int [] diffs = new int[gas.length * 2];
