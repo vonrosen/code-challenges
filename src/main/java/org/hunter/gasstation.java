@@ -18,7 +18,7 @@ class gasstation {
             }
             int length = right - left + 1;
             if(length == gas.length){
-                return left % gas.length;
+                return left;
             }
             ++right;
         }
