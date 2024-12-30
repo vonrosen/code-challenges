@@ -5,12 +5,14 @@ class CacheLinkList{
     int value;
     int useCount;
     int size = 0;
-    CacheLinkList head;
-    CacheLinkList tail;
+    CacheLinkList sentinel;
     CacheLinkList next;
     CacheLinkList prev;
 
-    CacheLinkList(){        
+    CacheLinkList(){
+        sentinel = new CacheLinkList(-1, -1, -1);
+        sentinel.next = sentinel;
+        sentinel.prev = sentinel;        
     }
 
     CacheLinkList(int key, int value, int useCount){
@@ -25,48 +27,19 @@ class CacheLinkList{
 
     void add(CacheLinkList node){
         ++size;
-        node.prev = null;
-        node.next = null;
-        if(tail == null){
-            head = node;
-            tail = node;
-            return;
-        }
-        if(head == tail){
-            head.next = node;
-            node.prev = head;
-            tail = node;
-            return;
-        }
-        tail.next = node;
-        node.prev = tail;
-        tail = node;
+        sentinel.prev.next = node;
+        node.prev = sentinel.prev;
+        node.next = sentinel;
+        sentinel.prev = node;
     }
 
     void remove(CacheLinkList list){
-        if(head == null){
-            size = 0;
-            return;
-        }
-        if(head == tail){
-            head = null;
-            tail = null;
-            size = 0;
+        if(size == 0){
             return;
         }
         --size;
-        if(head == list){
-            head = head.next;
-            head.prev = null;
-            return;
-        }
-        if(tail == list){
-            tail.prev.next = null;
-            tail = tail.prev;
-            return;
-        }
         list.prev.next = list.next;  
-        list.next.prev = list.prev;      
+        list.next.prev = list.prev;
     }
 
     public String toString(){
@@ -128,8 +101,8 @@ class LFUCache {
             if(list.size == 1){
                 counts.remove(minUseCount);
             }            
-            cache.remove(list.head.key);
-            list.remove(list.head);            
+            cache.remove(list.sentinel.next.key);
+            list.remove(list.sentinel.next);            
         }
         CacheLinkList list = counts.get(1);
         CacheLinkList newNode = new CacheLinkList(key, value, 1);
