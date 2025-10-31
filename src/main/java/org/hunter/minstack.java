@@ -1,4 +1,4 @@
-package. org.hunter;
+package org.hunter;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ class minstack {
 
     private Stack<Holder> stack;
 
-    public MinStack() {
+    public minstack() {
         stack = new Stack<>();
     }
     
