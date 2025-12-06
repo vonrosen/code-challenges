@@ -12,16 +12,18 @@ public class ReverseLinkedList{
 		System.out.println(reverseLinkedList.reverseList2(head));
 	}
 
+	//[1,2,3,4,5]
+	//
 	public ListNode reverseList2(ListNode head){
 		ListNode curr = head;
-		ListNode prev = null;
+		ListNode reversedHead = null;
 		while(curr != null){
 			ListNode nextTmp = curr.next;
-			curr.next = prev;
-			prev = curr;
+			curr.next = reversedHead;
+			reversedHead = curr;
 			curr = nextTmp;
 		}
-		return prev;
+		return reversedHead;
 	}
 
 	public ListNode reverseList(ListNode head) {
