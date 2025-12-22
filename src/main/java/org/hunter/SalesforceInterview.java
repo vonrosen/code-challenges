@@ -5,7 +5,7 @@ import java.util.*;
 public class SalesforceInterview {
 
     public static void main(String [] args) {
-        kahn();
+        executionOrder();
     }
 
     static void dfs() {
@@ -60,14 +60,8 @@ public class SalesforceInterview {
         }
     }
 
-    static void kahn() {
+    static void executionOrder() {
         List<List<String>> commands = new ArrayList<>();
-
-//        commands.add(List.of("A", "B"));
-//        commands.add(List.of("A", "E"));
-//        commands.add(List.of("A", "X"));
-//        commands.add(List.of("C", "E"));
-//        commands.add(List.of("X", "Y"));
 
         commands.add(List.of("A", "B"));
         commands.add(List.of("A", "C"));
