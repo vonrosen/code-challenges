@@ -12,22 +12,19 @@ public class WarmUp {
     }
 
     public List<List<Integer>> twoSum(int [] nums, int target) {
-        List<List<Integer>> ans = new ArrayList<>();
-        Arrays.sort(nums);
         int left = 0;
         int right = nums.length - 1;
-        while(left < right) {
+        Arrays.sort(nums);
+        List<List<Integer>> ans = new ArrayList<>();
+        while (left < right) {
             int sum = nums[left] + nums[right];
-            if(sum == target) {
-                ans.add(List.of(
-                        nums[left],
-                        nums[right]
-                ));
-                ++left;
+            if(sum > target) {
                 --right;
-            }else if(sum < target) {
+            }else if (sum < target) {
                 ++left;
-            }else{
+            }else {
+                ans.add(List.of(nums[left], nums[right]));
+                ++left;
                 --right;
             }
         }

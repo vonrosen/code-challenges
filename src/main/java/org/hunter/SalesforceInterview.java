@@ -5,7 +5,39 @@ import java.util.*;
 public class SalesforceInterview {
 
     public static void main(String [] args) {
-        executionOrder();
+//        executionOrder();
+
+        System.out.println(valid(new int[][]{
+            {1,2},
+            {2,35},
+            {3,5},
+                {3,4}
+        }, new int[]{1,2,3,4}));
+    }
+
+
+    static boolean valid(int [][] edges, int [] target) {
+        Map<Integer,List<Integer>> graph = new HashMap<>();
+        for(int [] edge : edges) {
+            graph.putIfAbsent(edge[0], new ArrayList<>());
+            graph.get(edge[0]).add(edge[1]);
+        }
+        return dfs(0, target[0], target, graph);
+    }
+
+    static boolean dfs(int index, int value, int [] target, Map<Integer,List<Integer>> graph) {
+        if(index == target.length - 1) {
+            return (value == target[index]);
+        }
+        if(target[index] != value) {
+            return false;
+        }
+        for(int n : graph.getOrDefault(value, List.of())) {
+            if(dfs(index + 1, n, target, graph)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static void dfs() {
