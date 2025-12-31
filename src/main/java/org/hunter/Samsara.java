@@ -56,6 +56,16 @@ public class Samsara {
                 {0,0,1,0},
         };
         System.out.println(samsara.islands(matrix));
+        matrix = new int[][]{
+                {0,0,1,0},
+                {0,0,1,0},
+                {0,0,1,0},
+                {0,0,1,0},
+                {1,0,1,0},
+                {1,1,1,0},
+                {0,0,1,0},
+        };
+        System.out.println(samsara.islands(matrix));
     }
 
     public int islands(int [][] matrix) {
