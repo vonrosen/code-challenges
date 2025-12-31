@@ -12,16 +12,23 @@ public class ReverseLinkedList{
 		System.out.println(reverseLinkedList.reverseList2(head));
 	}
 
+	//[1,2,3,4,5]
+	//
 	public ListNode reverseList2(ListNode head){
 		ListNode curr = head;
-		ListNode prev = null;
+		ListNode reversedHead = null;
 		while(curr != null){
-			ListNode nextTmp = curr.next;
-			curr.next = prev;
-			prev = curr;
+			ListNode nextTmp = curr.next; //why do we do this? because
+			//if we didn't and just set curr = cur.next at the end of the loop
+			//then cur would equals reversedHead and we would exit the loop prematurely
+			//remember! when we set a reference to another reference we are setting that
+			//reference to point to the object which the reference is pointing to
+			//we are not setting the reference to track the other reference.
+			curr.next = reversedHead;
+			reversedHead = curr;
 			curr = nextTmp;
 		}
-		return prev;
+		return reversedHead;
 	}
 
 	public ListNode reverseList(ListNode head) {
