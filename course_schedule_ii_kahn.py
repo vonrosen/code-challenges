@@ -31,7 +31,7 @@ class Solution:
             course = queue.popleft()
 
             if course in seen:
-                []
+                return []
 
             seen.add(course)
             courses.append(course)
@@ -43,6 +43,8 @@ class Solution:
                         queue.append(next_course)
                         del in_degree[next_course]
 
+        #in case of a cycle which causes vertices not to be processed since
+        #their in degree never goes to 0 like [[0,2],[1,2],[2,0]]. 1 goes to 2 but 2 has indegree of 2 to start. then cycle between 0 and 2 means no other indegree 0 nodes available and exit loop processing only node 1
         if len(courses) != numCourses:
             return []
 
