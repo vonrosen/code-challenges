@@ -3,6 +3,12 @@
 
 # [-4,-1,-1,0,1,2]
 
+#O(n^2), O(1)
+#optimizations:
+# - break if nums[i] > 0
+# - skip dupes when iterating nums
+# - skip dupes when finding a match and incrementing start and decrementing high such that start is
+# - positioned at the next element that is not equal to the value where start was a match
 class Solution:
     def threeSum(self, nums: list[int]) -> list[list[int]]:
 
@@ -22,23 +28,26 @@ class Solution:
                     ans.append([nums[start], nums[end]])
                     start += 1
                     end -= 1
+                    while start < end and nums[start] == nums[start - 1]:
+                        start += 1
 
             return ans
 
         ans = []
-        dedupe = set()
         nums.sort()
         for i in range(len(nums)):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+            if nums[i] > 0:
+                return ans
             target = -nums[i]
             twos = twoSum(i + 1, len(nums) - 1, nums, target)
             if len(twos) > 0:
                 for two in twos:
-                    two_tuple = (nums[i], two[0], two[1])
-                    if two_tuple not in dedupe:
-                        ans.append([nums[i], two[0], two[1]])
-                        dedupe.add(two_tuple)
+                    ans.append([nums[i], two[0], two[1]])
 
         return ans
+
 
 solution = Solution()
 print(solution.threeSum([-1,0,1,2,-1,-4]))
