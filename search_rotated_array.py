@@ -1,5 +1,4 @@
 class Solution:
-    #O(LogN)
     def search(self, nums: list[int], target: int) -> int:
 
         def find_pivot(nums):
@@ -14,8 +13,6 @@ class Solution:
 
                 if mid_value > nums[right]:
                     left = mid + 1
-                elif mid_value < nums[left]:
-                    right = mid - 1
                 else:
                     right = mid - 1
             return left
@@ -38,15 +35,3 @@ class Solution:
             s1 = bin_search(nums, target, 0, pivot - 1)
             s2 = bin_search(nums, target, pivot, len(nums) - 1)
             return max(s1, s2)
-
-
-sol = Solution()
-print(sol.search([4,5,6,7,0,1,2], 0))
-print(sol.search([4,5,6,7,0,1,2], 3))
-print(sol.search([1], 0))
-print(sol.search([5,1,3], 5))
-print(sol.search([3,1], 0))
-
-# print(sol.search([1,2,0], 0))
-# print(sol.search([0,1,2,3], 0))
-
