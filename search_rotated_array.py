@@ -1,34 +1,52 @@
-import sys
-
 class Solution:
+    #O(LogN)
     def search(self, nums: list[int], target: int) -> int:
 
-        def local_min(nums, start, end):
-            while start <= end:
-                mid = int(start + (end - start) / 2)
-                l = sys.maxsize if mid == start else nums[mid - 1]
-                r = sys.maxsize if mid == end else nums[mid + 1]
+        def find_pivot(nums):
+            left = 0
+            right = len(nums) - 1
+            while left <= right:
+                mid = int(left + (right - left) / 2)
+                mid_value = nums[mid]
 
-                if l > nums[mid] < r:
+                if mid > 0 and mid < len(nums) - 1 and nums[mid - 1] > mid_value < nums[mid + 1]:
                     return mid
 
-                if l < nums[mid]:
-                    end = mid - 1
+                if mid_value > nums[right]:
+                    left = mid + 1
+                elif mid_value < nums[left]:
+                    right = mid - 1
                 else:
+                    right = mid - 1
+            return left
+
+        def bin_search(nums, target, start, end):
+            while start <= end:
+                mid = int(start + (end - start) / 2)
+                if nums[mid] == target:
+                    return mid
+                elif nums[mid] < target:
                     start = mid + 1
+                else:
+                    end = mid - 1
             return -1
 
-        lm1 = local_min(nums, 0, int(len(nums) / 2))
-        lm2 = local_min(nums, int(len(nums) / 2), len(nums) - 1)
-        print(min(nums[lm1], nums[lm2]))
-
-solution = Solution()
-# print(solution.search([0,1,2,3], 3))
-# print(solution.search([1,2,3,0], 3))
-# print(solution.search([3,0,1,2], 3))
-# print(solution.search([6,7,0,1,2,3,4,5], 7))
-solution.search([2,3,4,5,1], 1)
+        pivot = find_pivot(nums)
+        if pivot == 0:
+            return bin_search(nums,target, 0, len(nums) - 1)
+        else:
+            s1 = bin_search(nums, target, 0, pivot - 1)
+            s2 = bin_search(nums, target, pivot, len(nums) - 1)
+            return max(s1, s2)
 
 
+sol = Solution()
+print(sol.search([4,5,6,7,0,1,2], 0))
+print(sol.search([4,5,6,7,0,1,2], 3))
+print(sol.search([1], 0))
+print(sol.search([5,1,3], 5))
+print(sol.search([3,1], 0))
 
+# print(sol.search([1,2,0], 0))
+# print(sol.search([0,1,2,3], 0))
 
