@@ -1,5 +1,32 @@
 from collections import deque
 
+class Solution:
+    def multiply(self, num1: str, num2: str) -> str:
+        to_add = []
+        mult = 1
+        for i in range(len(num1) - 1, -1, -1):
+            num1c = num1[i]
+            carry = 0
+            next_num = ""
+            for j in range(len(num2) -1, -1, -1):
+                num2c = num2[j]
+                prod = int(num1c) * int(num2c)
+                prod += carry
+                carry = prod // 10
+                next_num = str(prod % 10) + next_num
+
+            if carry > 0:
+                next_num = str(carry) + next_num
+
+            to_add.append(int(next_num) * mult)
+            mult *= 10
+
+        ans = 0
+        for i in range(len(to_add)):
+            ans += to_add[i]
+
+        return str(ans)
+
 class Solution2:
     #times out n1 = len(num1), n2 = len(num2), n3 = len("1010" ^ max(len(n1, n2))
     # O((n1 * n3) + (n2 * n3)) + (n1 * n2) = timeout
@@ -109,7 +136,8 @@ class Solution2:
 
         return convert_to_num(bin_prod)
 
-solution = Solution2()
+solution = Solution()
 print(solution.multiply("2", "3"))
 print(solution.multiply("123", "3"))
 print(solution.multiply("123", "456"))
+print(solution.multiply("9", "9"))
