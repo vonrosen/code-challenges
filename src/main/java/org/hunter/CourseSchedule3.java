@@ -160,7 +160,6 @@ public class CourseSchedule3 {
                 day += duration;
             }else if (!used.isEmpty() && used.peek()[0] > duration) {
                 int [] usedCourse = used.poll();
-                heap.add(usedCourse);
                 used.add(course);
                 day -= usedCourse[0];
                 day += duration;
