@@ -6,7 +6,13 @@ public class RotateImage2 {
         RotateImage2 rotateImage2 = new RotateImage2();
         int [][] matrix = new int [][] {{1,2,3},{4,5,6},{7,8,9}};
         rotateImage2.rotate(matrix);
-        matrix = new int [][] {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+        matrix = new int [][] {
+                {1,2,3,4,5},
+                {6,7,8,9,10},
+                {11,12,13,14,15},
+                {16,17,18,19,20},
+                {21,22,23,24,25}
+        };
         //[[21,16,11,6,1],[22,17,12,7,2],[23,18,13,8,3],[24,19,14,9,4],[25,20,15,10,5]]
         rotateImage2.rotate(matrix);
 
@@ -26,6 +32,31 @@ public class RotateImage2 {
     }
 
     public void rotate(int[][] matrix) {
+        //transpose
+        for (int row = 0; row < matrix.length; ++row) {
+            for (int col = row; col < matrix.length; ++col) {
+                if (row != col) {
+                    int tmp = matrix[row][col];
+                    matrix[row][col] = matrix[col][row];
+                    matrix[col][row] = tmp;
+                }
+            }
+        }
+        //reverse
+        for (int row = 0; row < matrix.length; ++row) {
+            int low = 0;
+            int high = matrix.length - 1;
+            while (low < high) {
+                int tmp = matrix[row][low];
+                matrix[row][low] = matrix[row][high];
+                matrix[row][high] = tmp;
+                ++low;
+                --high;
+            }
+        }
+    }
+
+    public void rotate2(int[][] matrix) {
         int rotations = (int)Math.ceil((double)matrix.length / 2.0);
         int row = 0;
         int colStart = 0;
